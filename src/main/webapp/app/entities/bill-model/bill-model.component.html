@@ -1,0 +1,74 @@
+<div>
+    <h2>
+        <span>Bills</span>
+        <button class="btn btn-primary float-right jh-create-entity create-bill-model" [routerLink]="['/', { outlets: { popup: ['bill-model-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span >
+            Create new Bill
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="bills">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Billid</span></th>
+            <th><span>Paytype</span></th>
+            <th><span>Paydate</span></th>
+            <th><span>Cost</span></th>
+            <th><span>Custid</span></th>
+            <th><span>Serviceid</span></th>
+            <th><span>Room Service</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let bill of bills ;trackBy: trackId">
+                <td><a [routerLink]="['../bill-model', bill.id ]">{{bill.id}}</a></td>
+                <td>{{bill.billid}}</td>
+                <td>{{bill.paytype}}</td>
+                <td>{{bill.paydate | date:'medium'}}</td>
+                <td>{{bill.cost}}</td>
+                <td>{{bill.custid}}</td>
+                <td>{{bill.serviceid}}</td>
+                <td>
+                    <div *ngIf="bill.roomService">
+                        <a [routerLink]="['../room-service-model', bill.roomService?.id ]" >{{bill.roomService?.bill_id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../bill-model', bill.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'bill-model/'+ bill.id + '/edit'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'bill-model/'+ bill.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

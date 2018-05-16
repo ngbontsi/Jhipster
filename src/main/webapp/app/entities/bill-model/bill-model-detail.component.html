@@ -1,0 +1,52 @@
+
+<div *ngIf="bill">
+    <h2><span>Bill</span> {{bill.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Billid</span></dt>
+        <dd>
+            <span>{{bill.billid}}</span>
+        </dd>
+        <dt><span>Paytype</span></dt>
+        <dd>
+            <span>{{bill.paytype}}</span>
+        </dd>
+        <dt><span>Paydate</span></dt>
+        <dd>
+            <span>{{bill.paydate | date:'medium'}}</span>
+        </dd>
+        <dt><span>Cost</span></dt>
+        <dd>
+            <span>{{bill.cost}}</span>
+        </dd>
+        <dt><span>Custid</span></dt>
+        <dd>
+            <span>{{bill.custid}}</span>
+        </dd>
+        <dt><span>Serviceid</span></dt>
+        <dd>
+            <span>{{bill.serviceid}}</span>
+        </dd>
+        <dt><span>Room Service</span></dt>
+        <dd>
+            <div *ngIf="bill.roomService">
+                <a [routerLink]="['/room-service-model', bill.roomService?.id]">{{bill.roomService?.bill_id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'bill-model/'+ bill.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

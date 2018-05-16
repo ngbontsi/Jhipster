@@ -1,0 +1,42 @@
+
+<div *ngIf="booking">
+    <h2><span>Booking</span> {{booking.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Bookid</span></dt>
+        <dd>
+            <span>{{booking.bookid}}</span>
+        </dd>
+        <dt><span>Datein</span></dt>
+        <dd>
+            <span>{{booking.datein | date:'medium'}}</span>
+        </dd>
+        <dt><span>Dateout</span></dt>
+        <dd>
+            <span>{{booking.dateout | date:'medium'}}</span>
+        </dd>
+        <dt><span>Roomid</span></dt>
+        <dd>
+            <span>{{booking.roomid}}</span>
+        </dd>
+        <dt><span>Custid</span></dt>
+        <dd>
+            <span>{{booking.custid}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'booking-model/'+ booking.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

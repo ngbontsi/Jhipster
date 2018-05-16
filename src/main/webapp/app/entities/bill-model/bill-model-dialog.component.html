@@ -1,0 +1,124 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myBillLabel">Create or edit a Bill</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!bill.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="bill.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_billid">Billid</label>
+            <input type="number" class="form-control" name="billid" id="field_billid"
+                [(ngModel)]="bill.billid" required/>
+            <div [hidden]="!(editForm.controls.billid?.dirty && editForm.controls.billid?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.billid?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.billid?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_paytype">Paytype</label>
+            <input type="number" class="form-control" name="paytype" id="field_paytype"
+                [(ngModel)]="bill.paytype" required/>
+            <div [hidden]="!(editForm.controls.paytype?.dirty && editForm.controls.paytype?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.paytype?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.paytype?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_paydate">Paydate</label>
+            <div class="d-flex">
+                <input id="field_paydate" type="datetime-local" class="form-control" name="paydate" [(ngModel)]="bill.paydate"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.paydate?.dirty && editForm.controls.paydate?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.paydate?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.paydate?.errors?.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_cost">Cost</label>
+            <input type="number" class="form-control" name="cost" id="field_cost"
+                [(ngModel)]="bill.cost" required/>
+            <div [hidden]="!(editForm.controls.cost?.dirty && editForm.controls.cost?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.cost?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.cost?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_custid">Custid</label>
+            <input type="number" class="form-control" name="custid" id="field_custid"
+                [(ngModel)]="bill.custid" required/>
+            <div [hidden]="!(editForm.controls.custid?.dirty && editForm.controls.custid?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.custid?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.custid?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_serviceid">Serviceid</label>
+            <input type="number" class="form-control" name="serviceid" id="field_serviceid"
+                [(ngModel)]="bill.serviceid" required/>
+            <div [hidden]="!(editForm.controls.serviceid?.dirty && editForm.controls.serviceid?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.serviceid?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.serviceid?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_roomService">Room Service</label>
+            <select class="form-control" id="field_roomService" name="roomService" [(ngModel)]="bill.roomService" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="roomServiceOption.id === bill.roomService?.id ? bill.roomService : roomServiceOption" *ngFor="let roomServiceOption of roomservices; trackBy: trackRoomServiceById">{{roomServiceOption.bill_id}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

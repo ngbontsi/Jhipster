@@ -1,0 +1,104 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myBookingLabel">Create or edit a Booking</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!booking.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="booking.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_bookid">Bookid</label>
+            <input type="number" class="form-control" name="bookid" id="field_bookid"
+                [(ngModel)]="booking.bookid" required/>
+            <div [hidden]="!(editForm.controls.bookid?.dirty && editForm.controls.bookid?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.bookid?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.bookid?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_datein">Datein</label>
+            <div class="d-flex">
+                <input id="field_datein" type="datetime-local" class="form-control" name="datein" [(ngModel)]="booking.datein"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.datein?.dirty && editForm.controls.datein?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.datein?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.datein?.errors?.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_dateout">Dateout</label>
+            <div class="d-flex">
+                <input id="field_dateout" type="datetime-local" class="form-control" name="dateout" [(ngModel)]="booking.dateout"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.dateout?.dirty && editForm.controls.dateout?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.dateout?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.dateout?.errors?.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_roomid">Roomid</label>
+            <input type="number" class="form-control" name="roomid" id="field_roomid"
+                [(ngModel)]="booking.roomid" required/>
+            <div [hidden]="!(editForm.controls.roomid?.dirty && editForm.controls.roomid?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.roomid?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.roomid?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_custid">Custid</label>
+            <input type="number" class="form-control" name="custid" id="field_custid"
+                [(ngModel)]="booking.custid" required/>
+            <div [hidden]="!(editForm.controls.custid?.dirty && editForm.controls.custid?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.custid?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.custid?.errors?.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>
