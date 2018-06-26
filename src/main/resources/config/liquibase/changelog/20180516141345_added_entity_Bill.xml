@@ -22,10 +22,6 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="billid" type="integer">
-                <constraints nullable="false" />
-            </column>
-
             <column name="paytype" type="integer">
                 <constraints nullable="false" />
             </column>
@@ -34,20 +30,8 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="jhi_cost" type="integer">
+            <column name="billcost" type="integer">
                 <constraints nullable="false" />
-            </column>
-
-            <column name="custid" type="integer">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="serviceid" type="integer">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="room_service_id" type="bigint">
-                <constraints nullable="true" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->

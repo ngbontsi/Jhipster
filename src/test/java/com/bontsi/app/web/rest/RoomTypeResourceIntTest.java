@@ -4,6 +4,7 @@ import com.bontsi.app.GettingstatedApp;
 
 import com.bontsi.app.domain.RoomType;
 import com.bontsi.app.repository.RoomTypeRepository;
+import com.bontsi.app.service.RoomTypeService;
 import com.bontsi.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -38,17 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = GettingstatedApp.class)
 public class RoomTypeResourceIntTest {
 
-    private static final Integer DEFAULT_ROOMTYPE = 1;
-    private static final Integer UPDATED_ROOMTYPE = 2;
-
-    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
-    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
-
-    private static final Integer DEFAULT_RATES = 1;
-    private static final Integer UPDATED_RATES = 2;
+    private static final Integer DEFAULT_DESCRIPTION = 1;
+    private static final Integer UPDATED_DESCRIPTION = 2;
 
     @Autowired
     private RoomTypeRepository roomTypeRepository;
+
+    @Autowired
+    private RoomTypeService roomTypeService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,7 +67,7 @@ public class RoomTypeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final RoomTypeResource roomTypeResource = new RoomTypeResource(roomTypeRepository);
+        final RoomTypeResource roomTypeResource = new RoomTypeResource(roomTypeService);
         this.restRoomTypeMockMvc = MockMvcBuilders.standaloneSetup(roomTypeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -85,9 +83,7 @@ public class RoomTypeResourceIntTest {
      */
     public static RoomType createEntity(EntityManager em) {
         RoomType roomType = new RoomType()
-            .roomtype(DEFAULT_ROOMTYPE)
-            .description(DEFAULT_DESCRIPTION)
-            .rates(DEFAULT_RATES);
+            .description(DEFAULT_DESCRIPTION);
         return roomType;
     }
 
@@ -111,9 +107,7 @@ public class RoomTypeResourceIntTest {
         List<RoomType> roomTypeList = roomTypeRepository.findAll();
         assertThat(roomTypeList).hasSize(databaseSizeBeforeCreate + 1);
         RoomType testRoomType = roomTypeList.get(roomTypeList.size() - 1);
-        assertThat(testRoomType.getRoomtype()).isEqualTo(DEFAULT_ROOMTYPE);
         assertThat(testRoomType.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testRoomType.getRates()).isEqualTo(DEFAULT_RATES);
     }
 
     @Test
@@ -137,46 +131,10 @@ public class RoomTypeResourceIntTest {
 
     @Test
     @Transactional
-    public void checkRoomtypeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = roomTypeRepository.findAll().size();
-        // set the field null
-        roomType.setRoomtype(null);
-
-        // Create the RoomType, which fails.
-
-        restRoomTypeMockMvc.perform(post("/api/room-types")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(roomType)))
-            .andExpect(status().isBadRequest());
-
-        List<RoomType> roomTypeList = roomTypeRepository.findAll();
-        assertThat(roomTypeList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkDescriptionIsRequired() throws Exception {
         int databaseSizeBeforeTest = roomTypeRepository.findAll().size();
         // set the field null
         roomType.setDescription(null);
-
-        // Create the RoomType, which fails.
-
-        restRoomTypeMockMvc.perform(post("/api/room-types")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(roomType)))
-            .andExpect(status().isBadRequest());
-
-        List<RoomType> roomTypeList = roomTypeRepository.findAll();
-        assertThat(roomTypeList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkRatesIsRequired() throws Exception {
-        int databaseSizeBeforeTest = roomTypeRepository.findAll().size();
-        // set the field null
-        roomType.setRates(null);
 
         // Create the RoomType, which fails.
 
@@ -200,9 +158,7 @@ public class RoomTypeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(roomType.getId().intValue())))
-            .andExpect(jsonPath("$.[*].roomtype").value(hasItem(DEFAULT_ROOMTYPE)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].rates").value(hasItem(DEFAULT_RATES)));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
 
     @Test
@@ -216,9 +172,7 @@ public class RoomTypeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(roomType.getId().intValue()))
-            .andExpect(jsonPath("$.roomtype").value(DEFAULT_ROOMTYPE))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.rates").value(DEFAULT_RATES));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
     }
 
     @Test
@@ -233,7 +187,8 @@ public class RoomTypeResourceIntTest {
     @Transactional
     public void updateRoomType() throws Exception {
         // Initialize the database
-        roomTypeRepository.saveAndFlush(roomType);
+        roomTypeService.save(roomType);
+
         int databaseSizeBeforeUpdate = roomTypeRepository.findAll().size();
 
         // Update the roomType
@@ -241,9 +196,7 @@ public class RoomTypeResourceIntTest {
         // Disconnect from session so that the updates on updatedRoomType are not directly saved in db
         em.detach(updatedRoomType);
         updatedRoomType
-            .roomtype(UPDATED_ROOMTYPE)
-            .description(UPDATED_DESCRIPTION)
-            .rates(UPDATED_RATES);
+            .description(UPDATED_DESCRIPTION);
 
         restRoomTypeMockMvc.perform(put("/api/room-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -254,9 +207,7 @@ public class RoomTypeResourceIntTest {
         List<RoomType> roomTypeList = roomTypeRepository.findAll();
         assertThat(roomTypeList).hasSize(databaseSizeBeforeUpdate);
         RoomType testRoomType = roomTypeList.get(roomTypeList.size() - 1);
-        assertThat(testRoomType.getRoomtype()).isEqualTo(UPDATED_ROOMTYPE);
         assertThat(testRoomType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testRoomType.getRates()).isEqualTo(UPDATED_RATES);
     }
 
     @Test
@@ -281,7 +232,8 @@ public class RoomTypeResourceIntTest {
     @Transactional
     public void deleteRoomType() throws Exception {
         // Initialize the database
-        roomTypeRepository.saveAndFlush(roomType);
+        roomTypeService.save(roomType);
+
         int databaseSizeBeforeDelete = roomTypeRepository.findAll().size();
 
         // Get the roomType

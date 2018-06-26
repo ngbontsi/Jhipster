@@ -2,35 +2,23 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "many-to-one",
-            "relationshipName": "booking",
-            "otherEntityName": "booking",
-            "otherEntityField": "book_id"
+            "relationshipType": "one-to-one",
+            "relationshipName": "roomType",
+            "otherEntityName": "roomType",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "room"
         },
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "roomType",
-            "otherEntityName": "roomType",
-            "otherEntityField": "room_type"
+            "relationshipName": "booking",
+            "otherEntityName": "booking",
+            "otherEntityField": "id"
         }
     ],
     "fields": [
         {
-            "fieldName": "roomid",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "roomtype",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "isReserved",
+            "fieldName": "isreserved",
             "fieldType": "Boolean"
         }
     ],
@@ -38,7 +26,7 @@
     "entityTableName": "room",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "model"
+    "angularJSSuffix": "config"
 }

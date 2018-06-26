@@ -1,5 +1,6 @@
 package com.bontsi.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -24,12 +25,13 @@ public class CustomerType implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "custtype", nullable = false)
-    private Integer custtype;
-
-    @NotNull
-    @Column(name = "description", nullable = false)
+    @Size(max = 45)
+    @Column(name = "description", length = 45, nullable = false)
     private String description;
+
+    @OneToOne(mappedBy = "customerType")
+    @JsonIgnore
+    private Customer customer;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -38,19 +40,6 @@ public class CustomerType implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getCusttype() {
-        return custtype;
-    }
-
-    public CustomerType custtype(Integer custtype) {
-        this.custtype = custtype;
-        return this;
-    }
-
-    public void setCusttype(Integer custtype) {
-        this.custtype = custtype;
     }
 
     public String getDescription() {
@@ -64,6 +53,19 @@ public class CustomerType implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public CustomerType customer(Customer customer) {
+        this.customer = customer;
+        return this;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -91,7 +93,6 @@ public class CustomerType implements Serializable {
     public String toString() {
         return "CustomerType{" +
             "id=" + getId() +
-            ", custtype=" + getCusttype() +
             ", description='" + getDescription() + "'" +
             "}";
     }

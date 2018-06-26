@@ -1,27 +1,30 @@
 {
     "fluentMethods": true,
-    "relationships": [],
-    "fields": [
+    "relationships": [
         {
-            "fieldName": "custtype",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
+            "relationshipType": "one-to-one",
+            "relationshipName": "customer",
+            "otherEntityName": "customer",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "customerType"
+        }
+    ],
+    "fields": [
         {
             "fieldName": "description",
             "fieldType": "String",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 45
         }
     ],
     "changelogDate": "20180516141349",
     "entityTableName": "customer_type",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "model"
+    "angularJSSuffix": "config"
 }

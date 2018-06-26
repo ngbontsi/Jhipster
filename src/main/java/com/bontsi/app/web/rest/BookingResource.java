@@ -2,8 +2,7 @@ package com.bontsi.app.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.bontsi.app.domain.Booking;
-
-import com.bontsi.app.repository.BookingRepository;
+import com.bontsi.app.service.BookingService;
 import com.bontsi.app.web.rest.errors.BadRequestAlertException;
 import com.bontsi.app.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -30,10 +29,10 @@ public class BookingResource {
 
     private static final String ENTITY_NAME = "booking";
 
-    private final BookingRepository bookingRepository;
+    private final BookingService bookingService;
 
-    public BookingResource(BookingRepository bookingRepository) {
-        this.bookingRepository = bookingRepository;
+    public BookingResource(BookingService bookingService) {
+        this.bookingService = bookingService;
     }
 
     /**
@@ -50,7 +49,7 @@ public class BookingResource {
         if (booking.getId() != null) {
             throw new BadRequestAlertException("A new booking cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Booking result = bookingRepository.save(booking);
+        Booking result = bookingService.save(booking);
         return ResponseEntity.created(new URI("/api/bookings/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +71,7 @@ public class BookingResource {
         if (booking.getId() == null) {
             return createBooking(booking);
         }
-        Booking result = bookingRepository.save(booking);
+        Booking result = bookingService.save(booking);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, booking.getId().toString()))
             .body(result);
@@ -87,7 +86,7 @@ public class BookingResource {
     @Timed
     public List<Booking> getAllBookings() {
         log.debug("REST request to get all Bookings");
-        return bookingRepository.findAll();
+        return bookingService.findAll();
         }
 
     /**
@@ -100,7 +99,7 @@ public class BookingResource {
     @Timed
     public ResponseEntity<Booking> getBooking(@PathVariable Long id) {
         log.debug("REST request to get Booking : {}", id);
-        Booking booking = bookingRepository.findOne(id);
+        Booking booking = bookingService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(booking));
     }
 
@@ -114,7 +113,7 @@ public class BookingResource {
     @Timed
     public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
         log.debug("REST request to delete Booking : {}", id);
-        bookingRepository.delete(id);
+        bookingService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

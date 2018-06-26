@@ -1,0 +1,80 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myCustomerLabel">Create or edit a Customer</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!customer.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="customer.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                [(ngModel)]="customer.name" required maxlength="45"/>
+            <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.name?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.name?.errors?.maxlength">
+                   This field cannot be longer than 45 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_surname">Surname</label>
+            <input type="text" class="form-control" name="surname" id="field_surname"
+                [(ngModel)]="customer.surname" required maxlength="45"/>
+            <div [hidden]="!(editForm.controls.surname?.dirty && editForm.controls.surname?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.surname?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.surname?.errors?.maxlength">
+                   This field cannot be longer than 45 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_email">Email</label>
+            <input type="text" class="form-control" name="email" id="field_email"
+                [(ngModel)]="customer.email" maxlength="45"/>
+            <div [hidden]="!(editForm.controls.email?.dirty && editForm.controls.email?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.email?.errors?.maxlength">
+                   This field cannot be longer than 45 characters.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_customerType">Customer Type</label>
+            <select class="form-control" id="field_customerType" name="customerType" [(ngModel)]="customer.customerType">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="customerTypeOption.id === customer.customerType?.id ? customer.customerType : customerTypeOption" *ngFor="let customerTypeOption of customertypes; trackBy: trackCustomerTypeById">{{customerTypeOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_bill">Bill</label>
+            <select class="form-control" id="field_bill" name="bill" [(ngModel)]="customer.bill" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="billOption.id === customer.bill?.id ? customer.bill : billOption" *ngFor="let billOption of bills; trackBy: trackBillById">{{billOption.id}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

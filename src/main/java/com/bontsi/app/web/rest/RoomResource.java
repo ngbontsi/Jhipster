@@ -2,8 +2,7 @@ package com.bontsi.app.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.bontsi.app.domain.Room;
-
-import com.bontsi.app.repository.RoomRepository;
+import com.bontsi.app.service.RoomService;
 import com.bontsi.app.web.rest.errors.BadRequestAlertException;
 import com.bontsi.app.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -30,10 +28,10 @@ public class RoomResource {
 
     private static final String ENTITY_NAME = "room";
 
-    private final RoomRepository roomRepository;
+    private final RoomService roomService;
 
-    public RoomResource(RoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
+    public RoomResource(RoomService roomService) {
+        this.roomService = roomService;
     }
 
     /**
@@ -45,12 +43,12 @@ public class RoomResource {
      */
     @PostMapping("/rooms")
     @Timed
-    public ResponseEntity<Room> createRoom(@Valid @RequestBody Room room) throws URISyntaxException {
+    public ResponseEntity<Room> createRoom(@RequestBody Room room) throws URISyntaxException {
         log.debug("REST request to save Room : {}", room);
         if (room.getId() != null) {
             throw new BadRequestAlertException("A new room cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Room result = roomRepository.save(room);
+        Room result = roomService.save(room);
         return ResponseEntity.created(new URI("/api/rooms/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -67,12 +65,12 @@ public class RoomResource {
      */
     @PutMapping("/rooms")
     @Timed
-    public ResponseEntity<Room> updateRoom(@Valid @RequestBody Room room) throws URISyntaxException {
+    public ResponseEntity<Room> updateRoom(@RequestBody Room room) throws URISyntaxException {
         log.debug("REST request to update Room : {}", room);
         if (room.getId() == null) {
             return createRoom(room);
         }
-        Room result = roomRepository.save(room);
+        Room result = roomService.save(room);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, room.getId().toString()))
             .body(result);
@@ -87,7 +85,7 @@ public class RoomResource {
     @Timed
     public List<Room> getAllRooms() {
         log.debug("REST request to get all Rooms");
-        return roomRepository.findAll();
+        return roomService.findAll();
         }
 
     /**
@@ -100,7 +98,7 @@ public class RoomResource {
     @Timed
     public ResponseEntity<Room> getRoom(@PathVariable Long id) {
         log.debug("REST request to get Room : {}", id);
-        Room room = roomRepository.findOne(id);
+        Room room = roomService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(room));
     }
 
@@ -114,7 +112,7 @@ public class RoomResource {
     @Timed
     public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
         log.debug("REST request to delete Room : {}", id);
-        roomRepository.delete(id);
+        roomService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

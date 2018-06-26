@@ -4,6 +4,7 @@ import com.bontsi.app.GettingstatedApp;
 
 import com.bontsi.app.domain.Customer;
 import com.bontsi.app.repository.CustomerRepository;
+import com.bontsi.app.service.CustomerService;
 import com.bontsi.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -38,9 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = GettingstatedApp.class)
 public class CustomerResourceIntTest {
 
-    private static final Integer DEFAULT_CUSID = 1;
-    private static final Integer UPDATED_CUSID = 2;
-
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
@@ -50,11 +48,11 @@ public class CustomerResourceIntTest {
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
     private static final String UPDATED_EMAIL = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_CUSTTYPE = 1;
-    private static final Integer UPDATED_CUSTTYPE = 2;
-
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private CustomerService customerService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -75,7 +73,7 @@ public class CustomerResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CustomerResource customerResource = new CustomerResource(customerRepository);
+        final CustomerResource customerResource = new CustomerResource(customerService);
         this.restCustomerMockMvc = MockMvcBuilders.standaloneSetup(customerResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -91,11 +89,9 @@ public class CustomerResourceIntTest {
      */
     public static Customer createEntity(EntityManager em) {
         Customer customer = new Customer()
-            .cusid(DEFAULT_CUSID)
             .name(DEFAULT_NAME)
             .surname(DEFAULT_SURNAME)
-            .email(DEFAULT_EMAIL)
-            .custtype(DEFAULT_CUSTTYPE);
+            .email(DEFAULT_EMAIL);
         return customer;
     }
 
@@ -119,11 +115,9 @@ public class CustomerResourceIntTest {
         List<Customer> customerList = customerRepository.findAll();
         assertThat(customerList).hasSize(databaseSizeBeforeCreate + 1);
         Customer testCustomer = customerList.get(customerList.size() - 1);
-        assertThat(testCustomer.getCusid()).isEqualTo(DEFAULT_CUSID);
         assertThat(testCustomer.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testCustomer.getSurname()).isEqualTo(DEFAULT_SURNAME);
         assertThat(testCustomer.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testCustomer.getCusttype()).isEqualTo(DEFAULT_CUSTTYPE);
     }
 
     @Test
@@ -143,24 +137,6 @@ public class CustomerResourceIntTest {
         // Validate the Customer in the database
         List<Customer> customerList = customerRepository.findAll();
         assertThat(customerList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkCusidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = customerRepository.findAll().size();
-        // set the field null
-        customer.setCusid(null);
-
-        // Create the Customer, which fails.
-
-        restCustomerMockMvc.perform(post("/api/customers")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(customer)))
-            .andExpect(status().isBadRequest());
-
-        List<Customer> customerList = customerRepository.findAll();
-        assertThat(customerList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -201,24 +177,6 @@ public class CustomerResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCusttypeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = customerRepository.findAll().size();
-        // set the field null
-        customer.setCusttype(null);
-
-        // Create the Customer, which fails.
-
-        restCustomerMockMvc.perform(post("/api/customers")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(customer)))
-            .andExpect(status().isBadRequest());
-
-        List<Customer> customerList = customerRepository.findAll();
-        assertThat(customerList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllCustomers() throws Exception {
         // Initialize the database
         customerRepository.saveAndFlush(customer);
@@ -228,11 +186,9 @@ public class CustomerResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(customer.getId().intValue())))
-            .andExpect(jsonPath("$.[*].cusid").value(hasItem(DEFAULT_CUSID)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].surname").value(hasItem(DEFAULT_SURNAME.toString())))
-            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
-            .andExpect(jsonPath("$.[*].custtype").value(hasItem(DEFAULT_CUSTTYPE)));
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())));
     }
 
     @Test
@@ -246,11 +202,9 @@ public class CustomerResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(customer.getId().intValue()))
-            .andExpect(jsonPath("$.cusid").value(DEFAULT_CUSID))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.surname").value(DEFAULT_SURNAME.toString()))
-            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()))
-            .andExpect(jsonPath("$.custtype").value(DEFAULT_CUSTTYPE));
+            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()));
     }
 
     @Test
@@ -265,7 +219,8 @@ public class CustomerResourceIntTest {
     @Transactional
     public void updateCustomer() throws Exception {
         // Initialize the database
-        customerRepository.saveAndFlush(customer);
+        customerService.save(customer);
+
         int databaseSizeBeforeUpdate = customerRepository.findAll().size();
 
         // Update the customer
@@ -273,11 +228,9 @@ public class CustomerResourceIntTest {
         // Disconnect from session so that the updates on updatedCustomer are not directly saved in db
         em.detach(updatedCustomer);
         updatedCustomer
-            .cusid(UPDATED_CUSID)
             .name(UPDATED_NAME)
             .surname(UPDATED_SURNAME)
-            .email(UPDATED_EMAIL)
-            .custtype(UPDATED_CUSTTYPE);
+            .email(UPDATED_EMAIL);
 
         restCustomerMockMvc.perform(put("/api/customers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -288,11 +241,9 @@ public class CustomerResourceIntTest {
         List<Customer> customerList = customerRepository.findAll();
         assertThat(customerList).hasSize(databaseSizeBeforeUpdate);
         Customer testCustomer = customerList.get(customerList.size() - 1);
-        assertThat(testCustomer.getCusid()).isEqualTo(UPDATED_CUSID);
         assertThat(testCustomer.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testCustomer.getSurname()).isEqualTo(UPDATED_SURNAME);
         assertThat(testCustomer.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testCustomer.getCusttype()).isEqualTo(UPDATED_CUSTTYPE);
     }
 
     @Test
@@ -317,7 +268,8 @@ public class CustomerResourceIntTest {
     @Transactional
     public void deleteCustomer() throws Exception {
         // Initialize the database
-        customerRepository.saveAndFlush(customer);
+        customerService.save(customer);
+
         int databaseSizeBeforeDelete = customerRepository.findAll().size();
 
         // Get the customer

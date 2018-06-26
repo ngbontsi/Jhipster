@@ -1,0 +1,32 @@
+
+<div *ngIf="roomService">
+    <h2><span>Room Service</span> {{roomService.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Description</span></dt>
+        <dd>
+            <span>{{roomService.description}}</span>
+        </dd>
+        <dt><span>Bill</span></dt>
+        <dd>
+            <div *ngIf="roomService.bill">
+                <a [routerLink]="['/bill-config', roomService.bill?.id]">{{roomService.bill?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'room-service-config/'+ roomService.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

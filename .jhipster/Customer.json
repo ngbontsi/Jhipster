@@ -2,32 +2,21 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "many-to-one",
-            "relationshipName": "booking",
-            "otherEntityName": "booking",
-            "otherEntityField": "book_id"
+            "relationshipType": "one-to-one",
+            "relationshipName": "customerType",
+            "otherEntityName": "customerType",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "customer"
         },
         {
             "relationshipType": "many-to-one",
             "relationshipName": "bill",
             "otherEntityName": "bill",
-            "otherEntityField": "bill_id"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "customerType",
-            "otherEntityName": "customerType",
-            "otherEntityField": "cust_type"
+            "otherEntityField": "id"
         }
     ],
     "fields": [
-        {
-            "fieldName": "cusid",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
         {
             "fieldName": "name",
             "fieldType": "String",
@@ -53,20 +42,13 @@
                 "maxlength"
             ],
             "fieldValidateRulesMaxlength": 45
-        },
-        {
-            "fieldName": "custtype",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
     "changelogDate": "20180516141348",
     "entityTableName": "customer",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "model"
+    "angularJSSuffix": "config"
 }

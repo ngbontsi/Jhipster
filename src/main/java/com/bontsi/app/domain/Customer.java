@@ -24,10 +24,6 @@ public class Customer implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "cusid", nullable = false)
-    private Integer cusid;
-
-    @NotNull
     @Size(max = 45)
     @Column(name = "name", length = 45, nullable = false)
     private String name;
@@ -41,18 +37,12 @@ public class Customer implements Serializable {
     @Column(name = "email", length = 45)
     private String email;
 
-    @NotNull
-    @Column(name = "custtype", nullable = false)
-    private Integer custtype;
-
-    @ManyToOne
-    private Booking booking;
+    @OneToOne
+    @JoinColumn(unique = true)
+    private CustomerType customerType;
 
     @ManyToOne
     private Bill bill;
-
-    @ManyToOne
-    private CustomerType customerType;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -61,19 +51,6 @@ public class Customer implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getCusid() {
-        return cusid;
-    }
-
-    public Customer cusid(Integer cusid) {
-        this.cusid = cusid;
-        return this;
-    }
-
-    public void setCusid(Integer cusid) {
-        this.cusid = cusid;
     }
 
     public String getName() {
@@ -115,30 +92,17 @@ public class Customer implements Serializable {
         this.email = email;
     }
 
-    public Integer getCusttype() {
-        return custtype;
+    public CustomerType getCustomerType() {
+        return customerType;
     }
 
-    public Customer custtype(Integer custtype) {
-        this.custtype = custtype;
+    public Customer customerType(CustomerType customerType) {
+        this.customerType = customerType;
         return this;
     }
 
-    public void setCusttype(Integer custtype) {
-        this.custtype = custtype;
-    }
-
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public Customer booking(Booking booking) {
-        this.booking = booking;
-        return this;
-    }
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
+    public void setCustomerType(CustomerType customerType) {
+        this.customerType = customerType;
     }
 
     public Bill getBill() {
@@ -152,19 +116,6 @@ public class Customer implements Serializable {
 
     public void setBill(Bill bill) {
         this.bill = bill;
-    }
-
-    public CustomerType getCustomerType() {
-        return customerType;
-    }
-
-    public Customer customerType(CustomerType customerType) {
-        this.customerType = customerType;
-        return this;
-    }
-
-    public void setCustomerType(CustomerType customerType) {
-        this.customerType = customerType;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -192,11 +143,9 @@ public class Customer implements Serializable {
     public String toString() {
         return "Customer{" +
             "id=" + getId() +
-            ", cusid=" + getCusid() +
             ", name='" + getName() + "'" +
             ", surname='" + getSurname() + "'" +
             ", email='" + getEmail() + "'" +
-            ", custtype=" + getCusttype() +
             "}";
     }
 }

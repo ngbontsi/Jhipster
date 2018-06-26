@@ -2,8 +2,7 @@ package com.bontsi.app.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.bontsi.app.domain.Customer;
-
-import com.bontsi.app.repository.CustomerRepository;
+import com.bontsi.app.service.CustomerService;
 import com.bontsi.app.web.rest.errors.BadRequestAlertException;
 import com.bontsi.app.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -30,10 +29,10 @@ public class CustomerResource {
 
     private static final String ENTITY_NAME = "customer";
 
-    private final CustomerRepository customerRepository;
+    private final CustomerService customerService;
 
-    public CustomerResource(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public CustomerResource(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     /**
@@ -50,7 +49,7 @@ public class CustomerResource {
         if (customer.getId() != null) {
             throw new BadRequestAlertException("A new customer cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Customer result = customerRepository.save(customer);
+        Customer result = customerService.save(customer);
         return ResponseEntity.created(new URI("/api/customers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +71,7 @@ public class CustomerResource {
         if (customer.getId() == null) {
             return createCustomer(customer);
         }
-        Customer result = customerRepository.save(customer);
+        Customer result = customerService.save(customer);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, customer.getId().toString()))
             .body(result);
@@ -87,7 +86,7 @@ public class CustomerResource {
     @Timed
     public List<Customer> getAllCustomers() {
         log.debug("REST request to get all Customers");
-        return customerRepository.findAll();
+        return customerService.findAll();
         }
 
     /**
@@ -100,7 +99,7 @@ public class CustomerResource {
     @Timed
     public ResponseEntity<Customer> getCustomer(@PathVariable Long id) {
         log.debug("REST request to get Customer : {}", id);
-        Customer customer = customerRepository.findOne(id);
+        Customer customer = customerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(customer));
     }
 
@@ -114,7 +113,7 @@ public class CustomerResource {
     @Timed
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         log.debug("REST request to delete Customer : {}", id);
-        customerRepository.delete(id);
+        customerService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

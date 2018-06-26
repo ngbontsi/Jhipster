@@ -1,0 +1,70 @@
+<div>
+    <h2>
+        <span>Rooms</span>
+        <button class="btn btn-primary float-right jh-create-entity create-room-config" [routerLink]="['/', { outlets: { popup: ['room-config-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span >
+            Create new Room
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="rooms">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Isreserved</span></th>
+            <th><span>Room Type</span></th>
+            <th><span>Booking</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let room of rooms ;trackBy: trackId">
+                <td><a [routerLink]="['../room-config', room.id ]">{{room.id}}</a></td>
+                <td>{{room.isreserved}}</td>
+                <td>
+                    <div *ngIf="room.roomType">
+                        <a [routerLink]="['../room-type-config', room.roomType?.id ]" >{{room.roomType?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="room.booking">
+                        <a [routerLink]="['../booking-config', room.booking?.id ]" >{{room.booking?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../room-config', room.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'room-config/'+ room.id + '/edit'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'room-config/'+ room.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

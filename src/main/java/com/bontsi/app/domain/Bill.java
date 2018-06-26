@@ -1,5 +1,6 @@
 package com.bontsi.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -8,6 +9,8 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -25,10 +28,6 @@ public class Bill implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "billid", nullable = false)
-    private Integer billid;
-
-    @NotNull
     @Column(name = "paytype", nullable = false)
     private Integer paytype;
 
@@ -37,19 +36,23 @@ public class Bill implements Serializable {
     private Instant paydate;
 
     @NotNull
-    @Column(name = "jhi_cost", nullable = false)
-    private Integer cost;
+    @Column(name = "billcost", nullable = false)
+    private Integer billcost;
 
-    @NotNull
-    @Column(name = "custid", nullable = false)
-    private Integer custid;
+    @OneToMany(mappedBy = "bill")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Customer> customers = new HashSet<>();
 
-    @NotNull
-    @Column(name = "serviceid", nullable = false)
-    private Integer serviceid;
+    @OneToMany(mappedBy = "bill")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<RoomService> roomServices = new HashSet<>();
 
-    @ManyToOne
-    private RoomService roomService;
+    @OneToMany(mappedBy = "bill")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Booking> bookings = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -58,19 +61,6 @@ public class Bill implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getBillid() {
-        return billid;
-    }
-
-    public Bill billid(Integer billid) {
-        this.billid = billid;
-        return this;
-    }
-
-    public void setBillid(Integer billid) {
-        this.billid = billid;
     }
 
     public Integer getPaytype() {
@@ -99,56 +89,92 @@ public class Bill implements Serializable {
         this.paydate = paydate;
     }
 
-    public Integer getCost() {
-        return cost;
+    public Integer getBillcost() {
+        return billcost;
     }
 
-    public Bill cost(Integer cost) {
-        this.cost = cost;
+    public Bill billcost(Integer billcost) {
+        this.billcost = billcost;
         return this;
     }
 
-    public void setCost(Integer cost) {
-        this.cost = cost;
+    public void setBillcost(Integer billcost) {
+        this.billcost = billcost;
     }
 
-    public Integer getCustid() {
-        return custid;
+    public Set<Customer> getCustomers() {
+        return customers;
     }
 
-    public Bill custid(Integer custid) {
-        this.custid = custid;
+    public Bill customers(Set<Customer> customers) {
+        this.customers = customers;
         return this;
     }
 
-    public void setCustid(Integer custid) {
-        this.custid = custid;
-    }
-
-    public Integer getServiceid() {
-        return serviceid;
-    }
-
-    public Bill serviceid(Integer serviceid) {
-        this.serviceid = serviceid;
+    public Bill addCustomer(Customer customer) {
+        this.customers.add(customer);
+        customer.setBill(this);
         return this;
     }
 
-    public void setServiceid(Integer serviceid) {
-        this.serviceid = serviceid;
-    }
-
-    public RoomService getRoomService() {
-        return roomService;
-    }
-
-    public Bill roomService(RoomService roomService) {
-        this.roomService = roomService;
+    public Bill removeCustomer(Customer customer) {
+        this.customers.remove(customer);
+        customer.setBill(null);
         return this;
     }
 
-    public void setRoomService(RoomService roomService) {
-        this.roomService = roomService;
+    public void setCustomers(Set<Customer> customers) {
+        this.customers = customers;
+    }
+
+    public Set<RoomService> getRoomServices() {
+        return roomServices;
+    }
+
+    public Bill roomServices(Set<RoomService> roomServices) {
+        this.roomServices = roomServices;
+        return this;
+    }
+
+    public Bill addRoomService(RoomService roomService) {
+        this.roomServices.add(roomService);
+        roomService.setBill(this);
+        return this;
+    }
+
+    public Bill removeRoomService(RoomService roomService) {
+        this.roomServices.remove(roomService);
+        roomService.setBill(null);
+        return this;
+    }
+
+    public void setRoomServices(Set<RoomService> roomServices) {
+        this.roomServices = roomServices;
+    }
+
+    public Set<Booking> getBookings() {
+        return bookings;
+    }
+
+    public Bill bookings(Set<Booking> bookings) {
+        this.bookings = bookings;
+        return this;
+    }
+
+    public Bill addBooking(Booking booking) {
+        this.bookings.add(booking);
+        booking.setBill(this);
+        return this;
+    }
+
+    public Bill removeBooking(Booking booking) {
+        this.bookings.remove(booking);
+        booking.setBill(null);
+        return this;
+    }
+
+    public void setBookings(Set<Booking> bookings) {
+        this.bookings = bookings;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -176,12 +202,9 @@ public class Bill implements Serializable {
     public String toString() {
         return "Bill{" +
             "id=" + getId() +
-            ", billid=" + getBillid() +
             ", paytype=" + getPaytype() +
             ", paydate='" + getPaydate() + "'" +
-            ", cost=" + getCost() +
-            ", custid=" + getCustid() +
-            ", serviceid=" + getServiceid() +
+            ", billcost=" + getBillcost() +
             "}";
     }
 }

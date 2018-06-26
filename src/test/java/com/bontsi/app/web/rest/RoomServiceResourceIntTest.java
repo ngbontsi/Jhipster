@@ -4,6 +4,7 @@ import com.bontsi.app.GettingstatedApp;
 
 import com.bontsi.app.domain.RoomService;
 import com.bontsi.app.repository.RoomServiceRepository;
+import com.bontsi.app.service.RoomServiceService;
 import com.bontsi.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -38,14 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = GettingstatedApp.class)
 public class RoomServiceResourceIntTest {
 
-    private static final Integer DEFAULT_SERVICEID = 1;
-    private static final Integer UPDATED_SERVICEID = 2;
-
-    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
-    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
+    private static final Integer DEFAULT_DESCRIPTION = 1;
+    private static final Integer UPDATED_DESCRIPTION = 2;
 
     @Autowired
     private RoomServiceRepository roomServiceRepository;
+
+    @Autowired
+    private RoomServiceService roomServiceService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -66,7 +67,7 @@ public class RoomServiceResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final RoomServiceResource roomServiceResource = new RoomServiceResource(roomServiceRepository);
+        final RoomServiceResource roomServiceResource = new RoomServiceResource(roomServiceService);
         this.restRoomServiceMockMvc = MockMvcBuilders.standaloneSetup(roomServiceResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -82,7 +83,6 @@ public class RoomServiceResourceIntTest {
      */
     public static RoomService createEntity(EntityManager em) {
         RoomService roomService = new RoomService()
-            .serviceid(DEFAULT_SERVICEID)
             .description(DEFAULT_DESCRIPTION);
         return roomService;
     }
@@ -107,7 +107,6 @@ public class RoomServiceResourceIntTest {
         List<RoomService> roomServiceList = roomServiceRepository.findAll();
         assertThat(roomServiceList).hasSize(databaseSizeBeforeCreate + 1);
         RoomService testRoomService = roomServiceList.get(roomServiceList.size() - 1);
-        assertThat(testRoomService.getServiceid()).isEqualTo(DEFAULT_SERVICEID);
         assertThat(testRoomService.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
     }
 
@@ -128,24 +127,6 @@ public class RoomServiceResourceIntTest {
         // Validate the RoomService in the database
         List<RoomService> roomServiceList = roomServiceRepository.findAll();
         assertThat(roomServiceList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkServiceidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = roomServiceRepository.findAll().size();
-        // set the field null
-        roomService.setServiceid(null);
-
-        // Create the RoomService, which fails.
-
-        restRoomServiceMockMvc.perform(post("/api/room-services")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(roomService)))
-            .andExpect(status().isBadRequest());
-
-        List<RoomService> roomServiceList = roomServiceRepository.findAll();
-        assertThat(roomServiceList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -177,8 +158,7 @@ public class RoomServiceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(roomService.getId().intValue())))
-            .andExpect(jsonPath("$.[*].serviceid").value(hasItem(DEFAULT_SERVICEID)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
 
     @Test
@@ -192,8 +172,7 @@ public class RoomServiceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(roomService.getId().intValue()))
-            .andExpect(jsonPath("$.serviceid").value(DEFAULT_SERVICEID))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
     }
 
     @Test
@@ -208,7 +187,8 @@ public class RoomServiceResourceIntTest {
     @Transactional
     public void updateRoomService() throws Exception {
         // Initialize the database
-        roomServiceRepository.saveAndFlush(roomService);
+        roomServiceService.save(roomService);
+
         int databaseSizeBeforeUpdate = roomServiceRepository.findAll().size();
 
         // Update the roomService
@@ -216,7 +196,6 @@ public class RoomServiceResourceIntTest {
         // Disconnect from session so that the updates on updatedRoomService are not directly saved in db
         em.detach(updatedRoomService);
         updatedRoomService
-            .serviceid(UPDATED_SERVICEID)
             .description(UPDATED_DESCRIPTION);
 
         restRoomServiceMockMvc.perform(put("/api/room-services")
@@ -228,7 +207,6 @@ public class RoomServiceResourceIntTest {
         List<RoomService> roomServiceList = roomServiceRepository.findAll();
         assertThat(roomServiceList).hasSize(databaseSizeBeforeUpdate);
         RoomService testRoomService = roomServiceList.get(roomServiceList.size() - 1);
-        assertThat(testRoomService.getServiceid()).isEqualTo(UPDATED_SERVICEID);
         assertThat(testRoomService.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
     }
 
@@ -254,7 +232,8 @@ public class RoomServiceResourceIntTest {
     @Transactional
     public void deleteRoomService() throws Exception {
         // Initialize the database
-        roomServiceRepository.saveAndFlush(roomService);
+        roomServiceService.save(roomService);
+
         int databaseSizeBeforeDelete = roomServiceRepository.findAll().size();
 
         // Get the roomService

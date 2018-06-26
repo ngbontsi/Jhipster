@@ -4,6 +4,7 @@ import com.bontsi.app.GettingstatedApp;
 
 import com.bontsi.app.domain.CustomerType;
 import com.bontsi.app.repository.CustomerTypeRepository;
+import com.bontsi.app.service.CustomerTypeService;
 import com.bontsi.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -38,14 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = GettingstatedApp.class)
 public class CustomerTypeResourceIntTest {
 
-    private static final Integer DEFAULT_CUSTTYPE = 1;
-    private static final Integer UPDATED_CUSTTYPE = 2;
-
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
     @Autowired
     private CustomerTypeRepository customerTypeRepository;
+
+    @Autowired
+    private CustomerTypeService customerTypeService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -66,7 +67,7 @@ public class CustomerTypeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CustomerTypeResource customerTypeResource = new CustomerTypeResource(customerTypeRepository);
+        final CustomerTypeResource customerTypeResource = new CustomerTypeResource(customerTypeService);
         this.restCustomerTypeMockMvc = MockMvcBuilders.standaloneSetup(customerTypeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -82,7 +83,6 @@ public class CustomerTypeResourceIntTest {
      */
     public static CustomerType createEntity(EntityManager em) {
         CustomerType customerType = new CustomerType()
-            .custtype(DEFAULT_CUSTTYPE)
             .description(DEFAULT_DESCRIPTION);
         return customerType;
     }
@@ -107,7 +107,6 @@ public class CustomerTypeResourceIntTest {
         List<CustomerType> customerTypeList = customerTypeRepository.findAll();
         assertThat(customerTypeList).hasSize(databaseSizeBeforeCreate + 1);
         CustomerType testCustomerType = customerTypeList.get(customerTypeList.size() - 1);
-        assertThat(testCustomerType.getCusttype()).isEqualTo(DEFAULT_CUSTTYPE);
         assertThat(testCustomerType.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
     }
 
@@ -128,24 +127,6 @@ public class CustomerTypeResourceIntTest {
         // Validate the CustomerType in the database
         List<CustomerType> customerTypeList = customerTypeRepository.findAll();
         assertThat(customerTypeList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkCusttypeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = customerTypeRepository.findAll().size();
-        // set the field null
-        customerType.setCusttype(null);
-
-        // Create the CustomerType, which fails.
-
-        restCustomerTypeMockMvc.perform(post("/api/customer-types")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(customerType)))
-            .andExpect(status().isBadRequest());
-
-        List<CustomerType> customerTypeList = customerTypeRepository.findAll();
-        assertThat(customerTypeList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -177,7 +158,6 @@ public class CustomerTypeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(customerType.getId().intValue())))
-            .andExpect(jsonPath("$.[*].custtype").value(hasItem(DEFAULT_CUSTTYPE)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
 
@@ -192,7 +172,6 @@ public class CustomerTypeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(customerType.getId().intValue()))
-            .andExpect(jsonPath("$.custtype").value(DEFAULT_CUSTTYPE))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
     }
 
@@ -208,7 +187,8 @@ public class CustomerTypeResourceIntTest {
     @Transactional
     public void updateCustomerType() throws Exception {
         // Initialize the database
-        customerTypeRepository.saveAndFlush(customerType);
+        customerTypeService.save(customerType);
+
         int databaseSizeBeforeUpdate = customerTypeRepository.findAll().size();
 
         // Update the customerType
@@ -216,7 +196,6 @@ public class CustomerTypeResourceIntTest {
         // Disconnect from session so that the updates on updatedCustomerType are not directly saved in db
         em.detach(updatedCustomerType);
         updatedCustomerType
-            .custtype(UPDATED_CUSTTYPE)
             .description(UPDATED_DESCRIPTION);
 
         restCustomerTypeMockMvc.perform(put("/api/customer-types")
@@ -228,7 +207,6 @@ public class CustomerTypeResourceIntTest {
         List<CustomerType> customerTypeList = customerTypeRepository.findAll();
         assertThat(customerTypeList).hasSize(databaseSizeBeforeUpdate);
         CustomerType testCustomerType = customerTypeList.get(customerTypeList.size() - 1);
-        assertThat(testCustomerType.getCusttype()).isEqualTo(UPDATED_CUSTTYPE);
         assertThat(testCustomerType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
     }
 
@@ -254,7 +232,8 @@ public class CustomerTypeResourceIntTest {
     @Transactional
     public void deleteCustomerType() throws Exception {
         // Initialize the database
-        customerTypeRepository.saveAndFlush(customerType);
+        customerTypeService.save(customerType);
+
         int databaseSizeBeforeDelete = customerTypeRepository.findAll().size();
 
         // Get the customerType

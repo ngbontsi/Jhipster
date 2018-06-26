@@ -4,7 +4,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -23,22 +22,15 @@ public class Room implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "roomid", nullable = false)
-    private Integer roomid;
+    @Column(name = "isreserved")
+    private Boolean isreserved;
 
-    @NotNull
-    @Column(name = "roomtype", nullable = false)
-    private Integer roomtype;
-
-    @Column(name = "is_reserved")
-    private Boolean isReserved;
+    @OneToOne
+    @JoinColumn(unique = true)
+    private RoomType roomType;
 
     @ManyToOne
     private Booking booking;
-
-    @ManyToOne
-    private RoomType roomType;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -49,56 +41,17 @@ public class Room implements Serializable {
         this.id = id;
     }
 
-    public Integer getRoomid() {
-        return roomid;
+    public Boolean isIsreserved() {
+        return isreserved;
     }
 
-    public Room roomid(Integer roomid) {
-        this.roomid = roomid;
+    public Room isreserved(Boolean isreserved) {
+        this.isreserved = isreserved;
         return this;
     }
 
-    public void setRoomid(Integer roomid) {
-        this.roomid = roomid;
-    }
-
-    public Integer getRoomtype() {
-        return roomtype;
-    }
-
-    public Room roomtype(Integer roomtype) {
-        this.roomtype = roomtype;
-        return this;
-    }
-
-    public void setRoomtype(Integer roomtype) {
-        this.roomtype = roomtype;
-    }
-
-    public Boolean isIsReserved() {
-        return isReserved;
-    }
-
-    public Room isReserved(Boolean isReserved) {
-        this.isReserved = isReserved;
-        return this;
-    }
-
-    public void setIsReserved(Boolean isReserved) {
-        this.isReserved = isReserved;
-    }
-
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public Room booking(Booking booking) {
-        this.booking = booking;
-        return this;
-    }
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
+    public void setIsreserved(Boolean isreserved) {
+        this.isreserved = isreserved;
     }
 
     public RoomType getRoomType() {
@@ -112,6 +65,19 @@ public class Room implements Serializable {
 
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public Room booking(Booking booking) {
+        this.booking = booking;
+        return this;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -139,9 +105,7 @@ public class Room implements Serializable {
     public String toString() {
         return "Room{" +
             "id=" + getId() +
-            ", roomid=" + getRoomid() +
-            ", roomtype=" + getRoomtype() +
-            ", isReserved='" + isIsReserved() + "'" +
+            ", isreserved='" + isIsreserved() + "'" +
             "}";
     }
 }

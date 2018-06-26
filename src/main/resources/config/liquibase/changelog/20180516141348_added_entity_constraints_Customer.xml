@@ -8,23 +8,17 @@
     -->
     <changeSet id="20180516141348-2" author="jhipster">
         
-        <addForeignKeyConstraint baseColumnNames="booking_id"
+        <addForeignKeyConstraint baseColumnNames="customer_type_id"
                                  baseTableName="customer"
-                                 constraintName="fk_customer_booking_id"
+                                 constraintName="fk_customer_customer_type_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="booking"/>
+                                 referencedTableName="customer_type"/>
 
         <addForeignKeyConstraint baseColumnNames="bill_id"
                                  baseTableName="customer"
                                  constraintName="fk_customer_bill_id"
                                  referencedColumnNames="id"
                                  referencedTableName="bill"/>
-
-        <addForeignKeyConstraint baseColumnNames="customer_type_id"
-                                 baseTableName="customer"
-                                 constraintName="fk_customer_customer_type_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="customer_type"/>
 
     </changeSet>
 </databaseChangeLog>

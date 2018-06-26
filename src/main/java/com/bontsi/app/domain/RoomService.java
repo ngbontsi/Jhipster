@@ -24,13 +24,11 @@ public class RoomService implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "serviceid", nullable = false)
-    private Integer serviceid;
+    @Column(name = "description", nullable = false)
+    private Integer description;
 
-    @NotNull
-    @Size(max = 45)
-    @Column(name = "description", length = 45, nullable = false)
-    private String description;
+    @ManyToOne
+    private Bill bill;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -41,30 +39,30 @@ public class RoomService implements Serializable {
         this.id = id;
     }
 
-    public Integer getServiceid() {
-        return serviceid;
-    }
-
-    public RoomService serviceid(Integer serviceid) {
-        this.serviceid = serviceid;
-        return this;
-    }
-
-    public void setServiceid(Integer serviceid) {
-        this.serviceid = serviceid;
-    }
-
-    public String getDescription() {
+    public Integer getDescription() {
         return description;
     }
 
-    public RoomService description(String description) {
+    public RoomService description(Integer description) {
         this.description = description;
         return this;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Integer description) {
         this.description = description;
+    }
+
+    public Bill getBill() {
+        return bill;
+    }
+
+    public RoomService bill(Bill bill) {
+        this.bill = bill;
+        return this;
+    }
+
+    public void setBill(Bill bill) {
+        this.bill = bill;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -92,8 +90,7 @@ public class RoomService implements Serializable {
     public String toString() {
         return "RoomService{" +
             "id=" + getId() +
-            ", serviceid=" + getServiceid() +
-            ", description='" + getDescription() + "'" +
+            ", description=" + getDescription() +
             "}";
     }
 }

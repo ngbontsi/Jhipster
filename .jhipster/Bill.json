@@ -2,20 +2,25 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "many-to-one",
+            "relationshipType": "one-to-many",
+            "relationshipName": "customer",
+            "otherEntityName": "customer",
+            "otherEntityRelationshipName": "bill"
+        },
+        {
+            "relationshipType": "one-to-many",
             "relationshipName": "roomService",
             "otherEntityName": "roomService",
-            "otherEntityField": "bill_id"
+            "otherEntityRelationshipName": "bill"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "booking",
+            "otherEntityName": "booking",
+            "otherEntityRelationshipName": "bill"
         }
     ],
     "fields": [
-        {
-            "fieldName": "billid",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
         {
             "fieldName": "paytype",
             "fieldType": "Integer",
@@ -31,21 +36,7 @@
             ]
         },
         {
-            "fieldName": "cost",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "custid",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "serviceid",
+            "fieldName": "billcost",
             "fieldType": "Integer",
             "fieldValidateRules": [
                 "required"
@@ -56,7 +47,7 @@
     "entityTableName": "bill",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "model"
+    "angularJSSuffix": "config"
 }

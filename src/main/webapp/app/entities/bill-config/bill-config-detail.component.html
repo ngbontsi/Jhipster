@@ -1,0 +1,34 @@
+
+<div *ngIf="bill">
+    <h2><span>Bill</span> {{bill.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Paytype</span></dt>
+        <dd>
+            <span>{{bill.paytype}}</span>
+        </dd>
+        <dt><span>Paydate</span></dt>
+        <dd>
+            <span>{{bill.paydate | date:'medium'}}</span>
+        </dd>
+        <dt><span>Billcost</span></dt>
+        <dd>
+            <span>{{bill.billcost}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'bill-config/'+ bill.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

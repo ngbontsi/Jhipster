@@ -1,5 +1,6 @@
 package com.bontsi.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -8,6 +9,8 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -25,10 +28,6 @@ public class Booking implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "bookid", nullable = false)
-    private Integer bookid;
-
-    @NotNull
     @Column(name = "datein", nullable = false)
     private Instant datein;
 
@@ -36,13 +35,13 @@ public class Booking implements Serializable {
     @Column(name = "dateout", nullable = false)
     private Instant dateout;
 
-    @NotNull
-    @Column(name = "roomid", nullable = false)
-    private Integer roomid;
+    @ManyToOne
+    private Bill bill;
 
-    @NotNull
-    @Column(name = "custid", nullable = false)
-    private Integer custid;
+    @OneToMany(mappedBy = "booking")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Room> rooms = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -51,19 +50,6 @@ public class Booking implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getBookid() {
-        return bookid;
-    }
-
-    public Booking bookid(Integer bookid) {
-        this.bookid = bookid;
-        return this;
-    }
-
-    public void setBookid(Integer bookid) {
-        this.bookid = bookid;
     }
 
     public Instant getDatein() {
@@ -92,30 +78,42 @@ public class Booking implements Serializable {
         this.dateout = dateout;
     }
 
-    public Integer getRoomid() {
-        return roomid;
+    public Bill getBill() {
+        return bill;
     }
 
-    public Booking roomid(Integer roomid) {
-        this.roomid = roomid;
+    public Booking bill(Bill bill) {
+        this.bill = bill;
         return this;
     }
 
-    public void setRoomid(Integer roomid) {
-        this.roomid = roomid;
+    public void setBill(Bill bill) {
+        this.bill = bill;
     }
 
-    public Integer getCustid() {
-        return custid;
+    public Set<Room> getRooms() {
+        return rooms;
     }
 
-    public Booking custid(Integer custid) {
-        this.custid = custid;
+    public Booking rooms(Set<Room> rooms) {
+        this.rooms = rooms;
         return this;
     }
 
-    public void setCustid(Integer custid) {
-        this.custid = custid;
+    public Booking addRoom(Room room) {
+        this.rooms.add(room);
+        room.setBooking(this);
+        return this;
+    }
+
+    public Booking removeRoom(Room room) {
+        this.rooms.remove(room);
+        room.setBooking(null);
+        return this;
+    }
+
+    public void setRooms(Set<Room> rooms) {
+        this.rooms = rooms;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -143,11 +141,8 @@ public class Booking implements Serializable {
     public String toString() {
         return "Booking{" +
             "id=" + getId() +
-            ", bookid=" + getBookid() +
             ", datein='" + getDatein() + "'" +
             ", dateout='" + getDateout() + "'" +
-            ", roomid=" + getRoomid() +
-            ", custid=" + getCustid() +
             "}";
     }
 }

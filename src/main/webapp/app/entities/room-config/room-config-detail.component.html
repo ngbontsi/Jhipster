@@ -1,0 +1,38 @@
+
+<div *ngIf="room">
+    <h2><span>Room</span> {{room.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Isreserved</span></dt>
+        <dd>
+            <span>{{room.isreserved}}</span>
+        </dd>
+        <dt><span>Room Type</span></dt>
+        <dd>
+            <div *ngIf="room.roomType">
+                <a [routerLink]="['/room-type-config', room.roomType?.id]">{{room.roomType?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Booking</span></dt>
+        <dd>
+            <div *ngIf="room.booking">
+                <a [routerLink]="['/booking-config', room.booking?.id]">{{room.booking?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'room-config/'+ room.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

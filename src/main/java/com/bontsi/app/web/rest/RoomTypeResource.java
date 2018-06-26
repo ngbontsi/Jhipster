@@ -2,8 +2,7 @@ package com.bontsi.app.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.bontsi.app.domain.RoomType;
-
-import com.bontsi.app.repository.RoomTypeRepository;
+import com.bontsi.app.service.RoomTypeService;
 import com.bontsi.app.web.rest.errors.BadRequestAlertException;
 import com.bontsi.app.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -18,6 +17,7 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 /**
  * REST controller for managing RoomType.
@@ -30,10 +30,10 @@ public class RoomTypeResource {
 
     private static final String ENTITY_NAME = "roomType";
 
-    private final RoomTypeRepository roomTypeRepository;
+    private final RoomTypeService roomTypeService;
 
-    public RoomTypeResource(RoomTypeRepository roomTypeRepository) {
-        this.roomTypeRepository = roomTypeRepository;
+    public RoomTypeResource(RoomTypeService roomTypeService) {
+        this.roomTypeService = roomTypeService;
     }
 
     /**
@@ -50,7 +50,7 @@ public class RoomTypeResource {
         if (roomType.getId() != null) {
             throw new BadRequestAlertException("A new roomType cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        RoomType result = roomTypeRepository.save(roomType);
+        RoomType result = roomTypeService.save(roomType);
         return ResponseEntity.created(new URI("/api/room-types/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +72,7 @@ public class RoomTypeResource {
         if (roomType.getId() == null) {
             return createRoomType(roomType);
         }
-        RoomType result = roomTypeRepository.save(roomType);
+        RoomType result = roomTypeService.save(roomType);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, roomType.getId().toString()))
             .body(result);
@@ -81,13 +81,18 @@ public class RoomTypeResource {
     /**
      * GET  /room-types : get all the roomTypes.
      *
+     * @param filter the filter of the request
      * @return the ResponseEntity with status 200 (OK) and the list of roomTypes in body
      */
     @GetMapping("/room-types")
     @Timed
-    public List<RoomType> getAllRoomTypes() {
+    public List<RoomType> getAllRoomTypes(@RequestParam(required = false) String filter) {
+        if ("room-is-null".equals(filter)) {
+            log.debug("REST request to get all RoomTypes where room is null");
+            return roomTypeService.findAllWhereRoomIsNull();
+        }
         log.debug("REST request to get all RoomTypes");
-        return roomTypeRepository.findAll();
+        return roomTypeService.findAll();
         }
 
     /**
@@ -100,7 +105,7 @@ public class RoomTypeResource {
     @Timed
     public ResponseEntity<RoomType> getRoomType(@PathVariable Long id) {
         log.debug("REST request to get RoomType : {}", id);
-        RoomType roomType = roomTypeRepository.findOne(id);
+        RoomType roomType = roomTypeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(roomType));
     }
 
@@ -114,7 +119,7 @@ public class RoomTypeResource {
     @Timed
     public ResponseEntity<Void> deleteRoomType(@PathVariable Long id) {
         log.debug("REST request to delete RoomType : {}", id);
-        roomTypeRepository.delete(id);
+        roomTypeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

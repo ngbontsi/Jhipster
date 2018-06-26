@@ -1,25 +1,17 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "room",
+            "otherEntityName": "room",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "roomType"
+        }
+    ],
     "fields": [
         {
-            "fieldName": "roomtype",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
             "fieldName": "description",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": 45
-        },
-        {
-            "fieldName": "rates",
             "fieldType": "Integer",
             "fieldValidateRules": [
                 "required"
@@ -30,7 +22,7 @@
     "entityTableName": "room_type",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "model"
+    "angularJSSuffix": "config"
 }

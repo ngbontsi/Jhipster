@@ -2,8 +2,7 @@ package com.bontsi.app.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.bontsi.app.domain.CustomerType;
-
-import com.bontsi.app.repository.CustomerTypeRepository;
+import com.bontsi.app.service.CustomerTypeService;
 import com.bontsi.app.web.rest.errors.BadRequestAlertException;
 import com.bontsi.app.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -18,6 +17,7 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 /**
  * REST controller for managing CustomerType.
@@ -30,10 +30,10 @@ public class CustomerTypeResource {
 
     private static final String ENTITY_NAME = "customerType";
 
-    private final CustomerTypeRepository customerTypeRepository;
+    private final CustomerTypeService customerTypeService;
 
-    public CustomerTypeResource(CustomerTypeRepository customerTypeRepository) {
-        this.customerTypeRepository = customerTypeRepository;
+    public CustomerTypeResource(CustomerTypeService customerTypeService) {
+        this.customerTypeService = customerTypeService;
     }
 
     /**
@@ -50,7 +50,7 @@ public class CustomerTypeResource {
         if (customerType.getId() != null) {
             throw new BadRequestAlertException("A new customerType cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        CustomerType result = customerTypeRepository.save(customerType);
+        CustomerType result = customerTypeService.save(customerType);
         return ResponseEntity.created(new URI("/api/customer-types/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +72,7 @@ public class CustomerTypeResource {
         if (customerType.getId() == null) {
             return createCustomerType(customerType);
         }
-        CustomerType result = customerTypeRepository.save(customerType);
+        CustomerType result = customerTypeService.save(customerType);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, customerType.getId().toString()))
             .body(result);
@@ -81,13 +81,18 @@ public class CustomerTypeResource {
     /**
      * GET  /customer-types : get all the customerTypes.
      *
+     * @param filter the filter of the request
      * @return the ResponseEntity with status 200 (OK) and the list of customerTypes in body
      */
     @GetMapping("/customer-types")
     @Timed
-    public List<CustomerType> getAllCustomerTypes() {
+    public List<CustomerType> getAllCustomerTypes(@RequestParam(required = false) String filter) {
+        if ("customer-is-null".equals(filter)) {
+            log.debug("REST request to get all CustomerTypes where customer is null");
+            return customerTypeService.findAllWhereCustomerIsNull();
+        }
         log.debug("REST request to get all CustomerTypes");
-        return customerTypeRepository.findAll();
+        return customerTypeService.findAll();
         }
 
     /**
@@ -100,7 +105,7 @@ public class CustomerTypeResource {
     @Timed
     public ResponseEntity<CustomerType> getCustomerType(@PathVariable Long id) {
         log.debug("REST request to get CustomerType : {}", id);
-        CustomerType customerType = customerTypeRepository.findOne(id);
+        CustomerType customerType = customerTypeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(customerType));
     }
 
@@ -114,7 +119,7 @@ public class CustomerTypeResource {
     @Timed
     public ResponseEntity<Void> deleteCustomerType(@PathVariable Long id) {
         log.debug("REST request to delete CustomerType : {}", id);
-        customerTypeRepository.delete(id);
+        customerTypeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

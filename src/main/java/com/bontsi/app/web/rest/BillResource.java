@@ -2,8 +2,7 @@ package com.bontsi.app.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.bontsi.app.domain.Bill;
-
-import com.bontsi.app.repository.BillRepository;
+import com.bontsi.app.service.BillService;
 import com.bontsi.app.web.rest.errors.BadRequestAlertException;
 import com.bontsi.app.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -30,10 +29,10 @@ public class BillResource {
 
     private static final String ENTITY_NAME = "bill";
 
-    private final BillRepository billRepository;
+    private final BillService billService;
 
-    public BillResource(BillRepository billRepository) {
-        this.billRepository = billRepository;
+    public BillResource(BillService billService) {
+        this.billService = billService;
     }
 
     /**
@@ -50,7 +49,7 @@ public class BillResource {
         if (bill.getId() != null) {
             throw new BadRequestAlertException("A new bill cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Bill result = billRepository.save(bill);
+        Bill result = billService.save(bill);
         return ResponseEntity.created(new URI("/api/bills/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +71,7 @@ public class BillResource {
         if (bill.getId() == null) {
             return createBill(bill);
         }
-        Bill result = billRepository.save(bill);
+        Bill result = billService.save(bill);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, bill.getId().toString()))
             .body(result);
@@ -87,7 +86,7 @@ public class BillResource {
     @Timed
     public List<Bill> getAllBills() {
         log.debug("REST request to get all Bills");
-        return billRepository.findAll();
+        return billService.findAll();
         }
 
     /**
@@ -100,7 +99,7 @@ public class BillResource {
     @Timed
     public ResponseEntity<Bill> getBill(@PathVariable Long id) {
         log.debug("REST request to get Bill : {}", id);
-        Bill bill = billRepository.findOne(id);
+        Bill bill = billService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(bill));
     }
 
@@ -114,7 +113,7 @@ public class BillResource {
     @Timed
     public ResponseEntity<Void> deleteBill(@PathVariable Long id) {
         log.debug("REST request to delete Bill : {}", id);
-        billRepository.delete(id);
+        billService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

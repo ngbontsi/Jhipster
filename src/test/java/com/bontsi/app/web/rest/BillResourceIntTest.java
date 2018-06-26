@@ -4,6 +4,7 @@ import com.bontsi.app.GettingstatedApp;
 
 import com.bontsi.app.domain.Bill;
 import com.bontsi.app.repository.BillRepository;
+import com.bontsi.app.service.BillService;
 import com.bontsi.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -40,26 +41,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = GettingstatedApp.class)
 public class BillResourceIntTest {
 
-    private static final Integer DEFAULT_BILLID = 1;
-    private static final Integer UPDATED_BILLID = 2;
-
     private static final Integer DEFAULT_PAYTYPE = 1;
     private static final Integer UPDATED_PAYTYPE = 2;
 
     private static final Instant DEFAULT_PAYDATE = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_PAYDATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final Integer DEFAULT_COST = 1;
-    private static final Integer UPDATED_COST = 2;
-
-    private static final Integer DEFAULT_CUSTID = 1;
-    private static final Integer UPDATED_CUSTID = 2;
-
-    private static final Integer DEFAULT_SERVICEID = 1;
-    private static final Integer UPDATED_SERVICEID = 2;
+    private static final Integer DEFAULT_BILLCOST = 1;
+    private static final Integer UPDATED_BILLCOST = 2;
 
     @Autowired
     private BillRepository billRepository;
+
+    @Autowired
+    private BillService billService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -80,7 +75,7 @@ public class BillResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final BillResource billResource = new BillResource(billRepository);
+        final BillResource billResource = new BillResource(billService);
         this.restBillMockMvc = MockMvcBuilders.standaloneSetup(billResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -96,12 +91,9 @@ public class BillResourceIntTest {
      */
     public static Bill createEntity(EntityManager em) {
         Bill bill = new Bill()
-            .billid(DEFAULT_BILLID)
             .paytype(DEFAULT_PAYTYPE)
             .paydate(DEFAULT_PAYDATE)
-            .cost(DEFAULT_COST)
-            .custid(DEFAULT_CUSTID)
-            .serviceid(DEFAULT_SERVICEID);
+            .billcost(DEFAULT_BILLCOST);
         return bill;
     }
 
@@ -125,12 +117,9 @@ public class BillResourceIntTest {
         List<Bill> billList = billRepository.findAll();
         assertThat(billList).hasSize(databaseSizeBeforeCreate + 1);
         Bill testBill = billList.get(billList.size() - 1);
-        assertThat(testBill.getBillid()).isEqualTo(DEFAULT_BILLID);
         assertThat(testBill.getPaytype()).isEqualTo(DEFAULT_PAYTYPE);
         assertThat(testBill.getPaydate()).isEqualTo(DEFAULT_PAYDATE);
-        assertThat(testBill.getCost()).isEqualTo(DEFAULT_COST);
-        assertThat(testBill.getCustid()).isEqualTo(DEFAULT_CUSTID);
-        assertThat(testBill.getServiceid()).isEqualTo(DEFAULT_SERVICEID);
+        assertThat(testBill.getBillcost()).isEqualTo(DEFAULT_BILLCOST);
     }
 
     @Test
@@ -150,24 +139,6 @@ public class BillResourceIntTest {
         // Validate the Bill in the database
         List<Bill> billList = billRepository.findAll();
         assertThat(billList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkBillidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = billRepository.findAll().size();
-        // set the field null
-        bill.setBillid(null);
-
-        // Create the Bill, which fails.
-
-        restBillMockMvc.perform(post("/api/bills")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(bill)))
-            .andExpect(status().isBadRequest());
-
-        List<Bill> billList = billRepository.findAll();
-        assertThat(billList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -208,46 +179,10 @@ public class BillResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCostIsRequired() throws Exception {
+    public void checkBillcostIsRequired() throws Exception {
         int databaseSizeBeforeTest = billRepository.findAll().size();
         // set the field null
-        bill.setCost(null);
-
-        // Create the Bill, which fails.
-
-        restBillMockMvc.perform(post("/api/bills")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(bill)))
-            .andExpect(status().isBadRequest());
-
-        List<Bill> billList = billRepository.findAll();
-        assertThat(billList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkCustidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = billRepository.findAll().size();
-        // set the field null
-        bill.setCustid(null);
-
-        // Create the Bill, which fails.
-
-        restBillMockMvc.perform(post("/api/bills")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(bill)))
-            .andExpect(status().isBadRequest());
-
-        List<Bill> billList = billRepository.findAll();
-        assertThat(billList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkServiceidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = billRepository.findAll().size();
-        // set the field null
-        bill.setServiceid(null);
+        bill.setBillcost(null);
 
         // Create the Bill, which fails.
 
@@ -271,12 +206,9 @@ public class BillResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(bill.getId().intValue())))
-            .andExpect(jsonPath("$.[*].billid").value(hasItem(DEFAULT_BILLID)))
             .andExpect(jsonPath("$.[*].paytype").value(hasItem(DEFAULT_PAYTYPE)))
             .andExpect(jsonPath("$.[*].paydate").value(hasItem(DEFAULT_PAYDATE.toString())))
-            .andExpect(jsonPath("$.[*].cost").value(hasItem(DEFAULT_COST)))
-            .andExpect(jsonPath("$.[*].custid").value(hasItem(DEFAULT_CUSTID)))
-            .andExpect(jsonPath("$.[*].serviceid").value(hasItem(DEFAULT_SERVICEID)));
+            .andExpect(jsonPath("$.[*].billcost").value(hasItem(DEFAULT_BILLCOST)));
     }
 
     @Test
@@ -290,12 +222,9 @@ public class BillResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(bill.getId().intValue()))
-            .andExpect(jsonPath("$.billid").value(DEFAULT_BILLID))
             .andExpect(jsonPath("$.paytype").value(DEFAULT_PAYTYPE))
             .andExpect(jsonPath("$.paydate").value(DEFAULT_PAYDATE.toString()))
-            .andExpect(jsonPath("$.cost").value(DEFAULT_COST))
-            .andExpect(jsonPath("$.custid").value(DEFAULT_CUSTID))
-            .andExpect(jsonPath("$.serviceid").value(DEFAULT_SERVICEID));
+            .andExpect(jsonPath("$.billcost").value(DEFAULT_BILLCOST));
     }
 
     @Test
@@ -310,7 +239,8 @@ public class BillResourceIntTest {
     @Transactional
     public void updateBill() throws Exception {
         // Initialize the database
-        billRepository.saveAndFlush(bill);
+        billService.save(bill);
+
         int databaseSizeBeforeUpdate = billRepository.findAll().size();
 
         // Update the bill
@@ -318,12 +248,9 @@ public class BillResourceIntTest {
         // Disconnect from session so that the updates on updatedBill are not directly saved in db
         em.detach(updatedBill);
         updatedBill
-            .billid(UPDATED_BILLID)
             .paytype(UPDATED_PAYTYPE)
             .paydate(UPDATED_PAYDATE)
-            .cost(UPDATED_COST)
-            .custid(UPDATED_CUSTID)
-            .serviceid(UPDATED_SERVICEID);
+            .billcost(UPDATED_BILLCOST);
 
         restBillMockMvc.perform(put("/api/bills")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -334,12 +261,9 @@ public class BillResourceIntTest {
         List<Bill> billList = billRepository.findAll();
         assertThat(billList).hasSize(databaseSizeBeforeUpdate);
         Bill testBill = billList.get(billList.size() - 1);
-        assertThat(testBill.getBillid()).isEqualTo(UPDATED_BILLID);
         assertThat(testBill.getPaytype()).isEqualTo(UPDATED_PAYTYPE);
         assertThat(testBill.getPaydate()).isEqualTo(UPDATED_PAYDATE);
-        assertThat(testBill.getCost()).isEqualTo(UPDATED_COST);
-        assertThat(testBill.getCustid()).isEqualTo(UPDATED_CUSTID);
-        assertThat(testBill.getServiceid()).isEqualTo(UPDATED_SERVICEID);
+        assertThat(testBill.getBillcost()).isEqualTo(UPDATED_BILLCOST);
     }
 
     @Test
@@ -364,7 +288,8 @@ public class BillResourceIntTest {
     @Transactional
     public void deleteBill() throws Exception {
         // Initialize the database
-        billRepository.saveAndFlush(bill);
+        billService.save(bill);
+
         int databaseSizeBeforeDelete = billRepository.findAll().size();
 
         // Get the bill

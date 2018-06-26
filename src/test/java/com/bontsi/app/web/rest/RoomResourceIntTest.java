@@ -4,6 +4,7 @@ import com.bontsi.app.GettingstatedApp;
 
 import com.bontsi.app.domain.Room;
 import com.bontsi.app.repository.RoomRepository;
+import com.bontsi.app.service.RoomService;
 import com.bontsi.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -38,17 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = GettingstatedApp.class)
 public class RoomResourceIntTest {
 
-    private static final Integer DEFAULT_ROOMID = 1;
-    private static final Integer UPDATED_ROOMID = 2;
-
-    private static final Integer DEFAULT_ROOMTYPE = 1;
-    private static final Integer UPDATED_ROOMTYPE = 2;
-
-    private static final Boolean DEFAULT_IS_RESERVED = false;
-    private static final Boolean UPDATED_IS_RESERVED = true;
+    private static final Boolean DEFAULT_ISRESERVED = false;
+    private static final Boolean UPDATED_ISRESERVED = true;
 
     @Autowired
     private RoomRepository roomRepository;
+
+    @Autowired
+    private RoomService roomService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,7 +67,7 @@ public class RoomResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final RoomResource roomResource = new RoomResource(roomRepository);
+        final RoomResource roomResource = new RoomResource(roomService);
         this.restRoomMockMvc = MockMvcBuilders.standaloneSetup(roomResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -85,9 +83,7 @@ public class RoomResourceIntTest {
      */
     public static Room createEntity(EntityManager em) {
         Room room = new Room()
-            .roomid(DEFAULT_ROOMID)
-            .roomtype(DEFAULT_ROOMTYPE)
-            .isReserved(DEFAULT_IS_RESERVED);
+            .isreserved(DEFAULT_ISRESERVED);
         return room;
     }
 
@@ -111,9 +107,7 @@ public class RoomResourceIntTest {
         List<Room> roomList = roomRepository.findAll();
         assertThat(roomList).hasSize(databaseSizeBeforeCreate + 1);
         Room testRoom = roomList.get(roomList.size() - 1);
-        assertThat(testRoom.getRoomid()).isEqualTo(DEFAULT_ROOMID);
-        assertThat(testRoom.getRoomtype()).isEqualTo(DEFAULT_ROOMTYPE);
-        assertThat(testRoom.isIsReserved()).isEqualTo(DEFAULT_IS_RESERVED);
+        assertThat(testRoom.isIsreserved()).isEqualTo(DEFAULT_ISRESERVED);
     }
 
     @Test
@@ -137,42 +131,6 @@ public class RoomResourceIntTest {
 
     @Test
     @Transactional
-    public void checkRoomidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = roomRepository.findAll().size();
-        // set the field null
-        room.setRoomid(null);
-
-        // Create the Room, which fails.
-
-        restRoomMockMvc.perform(post("/api/rooms")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(room)))
-            .andExpect(status().isBadRequest());
-
-        List<Room> roomList = roomRepository.findAll();
-        assertThat(roomList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkRoomtypeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = roomRepository.findAll().size();
-        // set the field null
-        room.setRoomtype(null);
-
-        // Create the Room, which fails.
-
-        restRoomMockMvc.perform(post("/api/rooms")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(room)))
-            .andExpect(status().isBadRequest());
-
-        List<Room> roomList = roomRepository.findAll();
-        assertThat(roomList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllRooms() throws Exception {
         // Initialize the database
         roomRepository.saveAndFlush(room);
@@ -182,9 +140,7 @@ public class RoomResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(room.getId().intValue())))
-            .andExpect(jsonPath("$.[*].roomid").value(hasItem(DEFAULT_ROOMID)))
-            .andExpect(jsonPath("$.[*].roomtype").value(hasItem(DEFAULT_ROOMTYPE)))
-            .andExpect(jsonPath("$.[*].isReserved").value(hasItem(DEFAULT_IS_RESERVED.booleanValue())));
+            .andExpect(jsonPath("$.[*].isreserved").value(hasItem(DEFAULT_ISRESERVED.booleanValue())));
     }
 
     @Test
@@ -198,9 +154,7 @@ public class RoomResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(room.getId().intValue()))
-            .andExpect(jsonPath("$.roomid").value(DEFAULT_ROOMID))
-            .andExpect(jsonPath("$.roomtype").value(DEFAULT_ROOMTYPE))
-            .andExpect(jsonPath("$.isReserved").value(DEFAULT_IS_RESERVED.booleanValue()));
+            .andExpect(jsonPath("$.isreserved").value(DEFAULT_ISRESERVED.booleanValue()));
     }
 
     @Test
@@ -215,7 +169,8 @@ public class RoomResourceIntTest {
     @Transactional
     public void updateRoom() throws Exception {
         // Initialize the database
-        roomRepository.saveAndFlush(room);
+        roomService.save(room);
+
         int databaseSizeBeforeUpdate = roomRepository.findAll().size();
 
         // Update the room
@@ -223,9 +178,7 @@ public class RoomResourceIntTest {
         // Disconnect from session so that the updates on updatedRoom are not directly saved in db
         em.detach(updatedRoom);
         updatedRoom
-            .roomid(UPDATED_ROOMID)
-            .roomtype(UPDATED_ROOMTYPE)
-            .isReserved(UPDATED_IS_RESERVED);
+            .isreserved(UPDATED_ISRESERVED);
 
         restRoomMockMvc.perform(put("/api/rooms")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -236,9 +189,7 @@ public class RoomResourceIntTest {
         List<Room> roomList = roomRepository.findAll();
         assertThat(roomList).hasSize(databaseSizeBeforeUpdate);
         Room testRoom = roomList.get(roomList.size() - 1);
-        assertThat(testRoom.getRoomid()).isEqualTo(UPDATED_ROOMID);
-        assertThat(testRoom.getRoomtype()).isEqualTo(UPDATED_ROOMTYPE);
-        assertThat(testRoom.isIsReserved()).isEqualTo(UPDATED_IS_RESERVED);
+        assertThat(testRoom.isIsreserved()).isEqualTo(UPDATED_ISRESERVED);
     }
 
     @Test
@@ -263,7 +214,8 @@ public class RoomResourceIntTest {
     @Transactional
     public void deleteRoom() throws Exception {
         // Initialize the database
-        roomRepository.saveAndFlush(room);
+        roomService.save(room);
+
         int databaseSizeBeforeDelete = roomRepository.findAll().size();
 
         // Get the room

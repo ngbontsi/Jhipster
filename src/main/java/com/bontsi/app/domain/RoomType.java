@@ -1,5 +1,6 @@
 package com.bontsi.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -24,17 +25,12 @@ public class RoomType implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "roomtype", nullable = false)
-    private Integer roomtype;
+    @Column(name = "description", nullable = false)
+    private Integer description;
 
-    @NotNull
-    @Size(max = 45)
-    @Column(name = "description", length = 45, nullable = false)
-    private String description;
-
-    @NotNull
-    @Column(name = "rates", nullable = false)
-    private Integer rates;
+    @OneToOne(mappedBy = "roomType")
+    @JsonIgnore
+    private Room room;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -45,43 +41,30 @@ public class RoomType implements Serializable {
         this.id = id;
     }
 
-    public Integer getRoomtype() {
-        return roomtype;
-    }
-
-    public RoomType roomtype(Integer roomtype) {
-        this.roomtype = roomtype;
-        return this;
-    }
-
-    public void setRoomtype(Integer roomtype) {
-        this.roomtype = roomtype;
-    }
-
-    public String getDescription() {
+    public Integer getDescription() {
         return description;
     }
 
-    public RoomType description(String description) {
+    public RoomType description(Integer description) {
         this.description = description;
         return this;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Integer description) {
         this.description = description;
     }
 
-    public Integer getRates() {
-        return rates;
+    public Room getRoom() {
+        return room;
     }
 
-    public RoomType rates(Integer rates) {
-        this.rates = rates;
+    public RoomType room(Room room) {
+        this.room = room;
         return this;
     }
 
-    public void setRates(Integer rates) {
-        this.rates = rates;
+    public void setRoom(Room room) {
+        this.room = room;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -109,9 +92,7 @@ public class RoomType implements Serializable {
     public String toString() {
         return "RoomType{" +
             "id=" + getId() +
-            ", roomtype=" + getRoomtype() +
-            ", description='" + getDescription() + "'" +
-            ", rates=" + getRates() +
+            ", description=" + getDescription() +
             "}";
     }
 }

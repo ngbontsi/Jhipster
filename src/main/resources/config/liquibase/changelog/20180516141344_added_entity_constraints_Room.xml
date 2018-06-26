@@ -8,17 +8,17 @@
     -->
     <changeSet id="20180516141344-2" author="jhipster">
         
-        <addForeignKeyConstraint baseColumnNames="booking_id"
-                                 baseTableName="room"
-                                 constraintName="fk_room_booking_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="booking"/>
-
         <addForeignKeyConstraint baseColumnNames="room_type_id"
                                  baseTableName="room"
                                  constraintName="fk_room_room_type_id"
                                  referencedColumnNames="id"
                                  referencedTableName="room_type"/>
+
+        <addForeignKeyConstraint baseColumnNames="booking_id"
+                                 baseTableName="room"
+                                 constraintName="fk_room_booking_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="booking"/>
 
     </changeSet>
 </databaseChangeLog>

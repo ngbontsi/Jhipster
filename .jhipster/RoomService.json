@@ -1,29 +1,27 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "bill",
+            "otherEntityName": "bill",
+            "otherEntityField": "id"
+        }
+    ],
     "fields": [
         {
-            "fieldName": "serviceid",
+            "fieldName": "description",
             "fieldType": "Integer",
             "fieldValidateRules": [
                 "required"
             ]
-        },
-        {
-            "fieldName": "description",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": 45
         }
     ],
     "changelogDate": "20180516141346",
     "entityTableName": "room_service",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "model"
+    "angularJSSuffix": "config"
 }

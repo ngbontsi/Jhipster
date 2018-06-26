@@ -4,6 +4,7 @@ import com.bontsi.app.GettingstatedApp;
 
 import com.bontsi.app.domain.Booking;
 import com.bontsi.app.repository.BookingRepository;
+import com.bontsi.app.service.BookingService;
 import com.bontsi.app.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -40,23 +41,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = GettingstatedApp.class)
 public class BookingResourceIntTest {
 
-    private static final Integer DEFAULT_BOOKID = 1;
-    private static final Integer UPDATED_BOOKID = 2;
-
     private static final Instant DEFAULT_DATEIN = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_DATEIN = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     private static final Instant DEFAULT_DATEOUT = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_DATEOUT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final Integer DEFAULT_ROOMID = 1;
-    private static final Integer UPDATED_ROOMID = 2;
-
-    private static final Integer DEFAULT_CUSTID = 1;
-    private static final Integer UPDATED_CUSTID = 2;
-
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private BookingService bookingService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -77,7 +72,7 @@ public class BookingResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final BookingResource bookingResource = new BookingResource(bookingRepository);
+        final BookingResource bookingResource = new BookingResource(bookingService);
         this.restBookingMockMvc = MockMvcBuilders.standaloneSetup(bookingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -93,11 +88,8 @@ public class BookingResourceIntTest {
      */
     public static Booking createEntity(EntityManager em) {
         Booking booking = new Booking()
-            .bookid(DEFAULT_BOOKID)
             .datein(DEFAULT_DATEIN)
-            .dateout(DEFAULT_DATEOUT)
-            .roomid(DEFAULT_ROOMID)
-            .custid(DEFAULT_CUSTID);
+            .dateout(DEFAULT_DATEOUT);
         return booking;
     }
 
@@ -121,11 +113,8 @@ public class BookingResourceIntTest {
         List<Booking> bookingList = bookingRepository.findAll();
         assertThat(bookingList).hasSize(databaseSizeBeforeCreate + 1);
         Booking testBooking = bookingList.get(bookingList.size() - 1);
-        assertThat(testBooking.getBookid()).isEqualTo(DEFAULT_BOOKID);
         assertThat(testBooking.getDatein()).isEqualTo(DEFAULT_DATEIN);
         assertThat(testBooking.getDateout()).isEqualTo(DEFAULT_DATEOUT);
-        assertThat(testBooking.getRoomid()).isEqualTo(DEFAULT_ROOMID);
-        assertThat(testBooking.getCustid()).isEqualTo(DEFAULT_CUSTID);
     }
 
     @Test
@@ -145,24 +134,6 @@ public class BookingResourceIntTest {
         // Validate the Booking in the database
         List<Booking> bookingList = bookingRepository.findAll();
         assertThat(bookingList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkBookidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = bookingRepository.findAll().size();
-        // set the field null
-        booking.setBookid(null);
-
-        // Create the Booking, which fails.
-
-        restBookingMockMvc.perform(post("/api/bookings")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(booking)))
-            .andExpect(status().isBadRequest());
-
-        List<Booking> bookingList = bookingRepository.findAll();
-        assertThat(bookingList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -203,42 +174,6 @@ public class BookingResourceIntTest {
 
     @Test
     @Transactional
-    public void checkRoomidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = bookingRepository.findAll().size();
-        // set the field null
-        booking.setRoomid(null);
-
-        // Create the Booking, which fails.
-
-        restBookingMockMvc.perform(post("/api/bookings")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(booking)))
-            .andExpect(status().isBadRequest());
-
-        List<Booking> bookingList = bookingRepository.findAll();
-        assertThat(bookingList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkCustidIsRequired() throws Exception {
-        int databaseSizeBeforeTest = bookingRepository.findAll().size();
-        // set the field null
-        booking.setCustid(null);
-
-        // Create the Booking, which fails.
-
-        restBookingMockMvc.perform(post("/api/bookings")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(booking)))
-            .andExpect(status().isBadRequest());
-
-        List<Booking> bookingList = bookingRepository.findAll();
-        assertThat(bookingList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllBookings() throws Exception {
         // Initialize the database
         bookingRepository.saveAndFlush(booking);
@@ -248,11 +183,8 @@ public class BookingResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(booking.getId().intValue())))
-            .andExpect(jsonPath("$.[*].bookid").value(hasItem(DEFAULT_BOOKID)))
             .andExpect(jsonPath("$.[*].datein").value(hasItem(DEFAULT_DATEIN.toString())))
-            .andExpect(jsonPath("$.[*].dateout").value(hasItem(DEFAULT_DATEOUT.toString())))
-            .andExpect(jsonPath("$.[*].roomid").value(hasItem(DEFAULT_ROOMID)))
-            .andExpect(jsonPath("$.[*].custid").value(hasItem(DEFAULT_CUSTID)));
+            .andExpect(jsonPath("$.[*].dateout").value(hasItem(DEFAULT_DATEOUT.toString())));
     }
 
     @Test
@@ -266,11 +198,8 @@ public class BookingResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(booking.getId().intValue()))
-            .andExpect(jsonPath("$.bookid").value(DEFAULT_BOOKID))
             .andExpect(jsonPath("$.datein").value(DEFAULT_DATEIN.toString()))
-            .andExpect(jsonPath("$.dateout").value(DEFAULT_DATEOUT.toString()))
-            .andExpect(jsonPath("$.roomid").value(DEFAULT_ROOMID))
-            .andExpect(jsonPath("$.custid").value(DEFAULT_CUSTID));
+            .andExpect(jsonPath("$.dateout").value(DEFAULT_DATEOUT.toString()));
     }
 
     @Test
@@ -285,7 +214,8 @@ public class BookingResourceIntTest {
     @Transactional
     public void updateBooking() throws Exception {
         // Initialize the database
-        bookingRepository.saveAndFlush(booking);
+        bookingService.save(booking);
+
         int databaseSizeBeforeUpdate = bookingRepository.findAll().size();
 
         // Update the booking
@@ -293,11 +223,8 @@ public class BookingResourceIntTest {
         // Disconnect from session so that the updates on updatedBooking are not directly saved in db
         em.detach(updatedBooking);
         updatedBooking
-            .bookid(UPDATED_BOOKID)
             .datein(UPDATED_DATEIN)
-            .dateout(UPDATED_DATEOUT)
-            .roomid(UPDATED_ROOMID)
-            .custid(UPDATED_CUSTID);
+            .dateout(UPDATED_DATEOUT);
 
         restBookingMockMvc.perform(put("/api/bookings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -308,11 +235,8 @@ public class BookingResourceIntTest {
         List<Booking> bookingList = bookingRepository.findAll();
         assertThat(bookingList).hasSize(databaseSizeBeforeUpdate);
         Booking testBooking = bookingList.get(bookingList.size() - 1);
-        assertThat(testBooking.getBookid()).isEqualTo(UPDATED_BOOKID);
         assertThat(testBooking.getDatein()).isEqualTo(UPDATED_DATEIN);
         assertThat(testBooking.getDateout()).isEqualTo(UPDATED_DATEOUT);
-        assertThat(testBooking.getRoomid()).isEqualTo(UPDATED_ROOMID);
-        assertThat(testBooking.getCustid()).isEqualTo(UPDATED_CUSTID);
     }
 
     @Test
@@ -337,7 +261,8 @@ public class BookingResourceIntTest {
     @Transactional
     public void deleteBooking() throws Exception {
         // Initialize the database
-        bookingRepository.saveAndFlush(booking);
+        bookingService.save(booking);
+
         int databaseSizeBeforeDelete = bookingRepository.findAll().size();
 
         // Get the booking

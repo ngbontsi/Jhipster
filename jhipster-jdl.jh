@@ -1,0 +1,53 @@
+entity Bill (bill) {
+    paytype Integer required,
+    paydate Instant required,
+    billcost Integer required
+    
+}
+
+entity Booking (Booking){
+    datein Instant required,
+    dateout Instant required
+  }
+
+entity Customer (customer) {
+	name String required maxlength(45),
+	surname String required maxlength(45),
+	email String  maxlength(45)
+}
+
+entity CustomerType (customerType) {
+    description String required maxlength(45)
+}
+
+entity Room (room) {
+    isreserved Boolean 
+}
+
+entity RoomService (roomService) {
+    description Integer required
+}
+entity RoomType (roomType) {
+    description Integer required
+}
+relationship ManyToOne {
+	Customer{bill} to Bill{customer}
+    RoomService{bill} to Bill{roomService}
+    Booking{bill} to Bill{booking}
+    Room{booking} to Booking{room}
+}
+relationship OneToOne{
+	Customer{customerType} to CustomerType{customer}
+    Room{roomType} to RoomType{room}
+}
+
+// Set pagination options
+//paginate TemplateVariable, DeviceConfig, DeviceTypeExpansion, DeviceTypeSchema, DeviceType, ExpansionType, TemplateExpansionType, Expansion, DeviceSetting, MAC, SIM, APN with infinite-scroll 
+//paginate ClientTemplateGroup, Template, Device with pagination
+
+//dto * with mapstruct
+
+// Set service options to all except few
+ service all with serviceImpl //except Employee, Job
+// Set an angular suffix
+angularSuffix * with config

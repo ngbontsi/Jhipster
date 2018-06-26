@@ -1,14 +1,20 @@
 {
     "fluentMethods": true,
-    "relationships": [],
-    "fields": [
+    "relationships": [
         {
-            "fieldName": "bookid",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "relationshipType": "many-to-one",
+            "relationshipName": "bill",
+            "otherEntityName": "bill",
+            "otherEntityField": "id"
         },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "room",
+            "otherEntityName": "room",
+            "otherEntityRelationshipName": "booking"
+        }
+    ],
+    "fields": [
         {
             "fieldName": "datein",
             "fieldType": "Instant",
@@ -22,27 +28,13 @@
             "fieldValidateRules": [
                 "required"
             ]
-        },
-        {
-            "fieldName": "roomid",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "custid",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
     "changelogDate": "20180516141343",
     "entityTableName": "booking",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "model"
+    "angularJSSuffix": "config"
 }

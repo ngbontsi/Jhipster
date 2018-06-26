@@ -2,8 +2,7 @@ package com.bontsi.app.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.bontsi.app.domain.RoomService;
-
-import com.bontsi.app.repository.RoomServiceRepository;
+import com.bontsi.app.service.RoomServiceService;
 import com.bontsi.app.web.rest.errors.BadRequestAlertException;
 import com.bontsi.app.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -30,10 +29,10 @@ public class RoomServiceResource {
 
     private static final String ENTITY_NAME = "roomService";
 
-    private final RoomServiceRepository roomServiceRepository;
+    private final RoomServiceService roomServiceService;
 
-    public RoomServiceResource(RoomServiceRepository roomServiceRepository) {
-        this.roomServiceRepository = roomServiceRepository;
+    public RoomServiceResource(RoomServiceService roomServiceService) {
+        this.roomServiceService = roomServiceService;
     }
 
     /**
@@ -50,7 +49,7 @@ public class RoomServiceResource {
         if (roomService.getId() != null) {
             throw new BadRequestAlertException("A new roomService cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        RoomService result = roomServiceRepository.save(roomService);
+        RoomService result = roomServiceService.save(roomService);
         return ResponseEntity.created(new URI("/api/room-services/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +71,7 @@ public class RoomServiceResource {
         if (roomService.getId() == null) {
             return createRoomService(roomService);
         }
-        RoomService result = roomServiceRepository.save(roomService);
+        RoomService result = roomServiceService.save(roomService);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, roomService.getId().toString()))
             .body(result);
@@ -87,7 +86,7 @@ public class RoomServiceResource {
     @Timed
     public List<RoomService> getAllRoomServices() {
         log.debug("REST request to get all RoomServices");
-        return roomServiceRepository.findAll();
+        return roomServiceService.findAll();
         }
 
     /**
@@ -100,7 +99,7 @@ public class RoomServiceResource {
     @Timed
     public ResponseEntity<RoomService> getRoomService(@PathVariable Long id) {
         log.debug("REST request to get RoomService : {}", id);
-        RoomService roomService = roomServiceRepository.findOne(id);
+        RoomService roomService = roomServiceService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(roomService));
     }
 
@@ -114,7 +113,7 @@ public class RoomServiceResource {
     @Timed
     public ResponseEntity<Void> deleteRoomService(@PathVariable Long id) {
         log.debug("REST request to delete RoomService : {}", id);
-        roomServiceRepository.delete(id);
+        roomServiceService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }
