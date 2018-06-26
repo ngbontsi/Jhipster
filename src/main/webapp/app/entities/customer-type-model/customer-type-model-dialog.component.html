@@ -13,21 +13,6 @@
                    [(ngModel)]="customerType.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" for="field_custtype">Custtype</label>
-            <input type="number" class="form-control" name="custtype" id="field_custtype"
-                [(ngModel)]="customerType.custtype" required/>
-            <div [hidden]="!(editForm.controls.custtype?.dirty && editForm.controls.custtype?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.custtype?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.custtype?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="form-control-label" for="field_description">Description</label>
             <input type="text" class="form-control" name="description" id="field_description"
                 [(ngModel)]="customerType.description" required/>
