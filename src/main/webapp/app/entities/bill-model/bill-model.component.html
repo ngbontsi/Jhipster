@@ -17,28 +17,34 @@
             <thead>
             <tr>
             <th><span>ID</span></th>
-            <th><span>Billid</span></th>
             <th><span>Paytype</span></th>
             <th><span>Paydate</span></th>
-            <th><span>Cost</span></th>
-            <th><span>Custid</span></th>
-            <th><span>Serviceid</span></th>
+            <th><span>Billcost</span></th>
+            <th><span>Customer</span></th>
             <th><span>Room Service</span></th>
+            <th><span>Booking</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let bill of bills ;trackBy: trackId">
                 <td><a [routerLink]="['../bill-model', bill.id ]">{{bill.id}}</a></td>
-                <td>{{bill.billid}}</td>
                 <td>{{bill.paytype}}</td>
                 <td>{{bill.paydate | date:'medium'}}</td>
-                <td>{{bill.cost}}</td>
-                <td>{{bill.custid}}</td>
-                <td>{{bill.serviceid}}</td>
+                <td>{{bill.billcost}}</td>
+                <td>
+                    <div *ngIf="bill.customer">
+                        <a [routerLink]="['../customer-model', bill.customer?.id ]" >{{bill.customer?.id}}</a>
+                    </div>
+                </td>
                 <td>
                     <div *ngIf="bill.roomService">
-                        <a [routerLink]="['../room-service-model', bill.roomService?.id ]" >{{bill.roomService?.bill_id}}</a>
+                        <a [routerLink]="['../room-service-model', bill.roomService?.id ]" >{{bill.roomService?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="bill.booking">
+                        <a [routerLink]="['../booking-model', bill.booking?.id ]" >{{bill.booking?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

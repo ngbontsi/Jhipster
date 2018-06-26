@@ -8,11 +8,23 @@
     -->
     <changeSet id="20180516141345-2" author="jhipster">
         
+        <addForeignKeyConstraint baseColumnNames="customer_id"
+                                 baseTableName="bill"
+                                 constraintName="fk_bill_customer_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="customer"/>
+
         <addForeignKeyConstraint baseColumnNames="room_service_id"
                                  baseTableName="bill"
                                  constraintName="fk_bill_room_service_id"
                                  referencedColumnNames="id"
                                  referencedTableName="room_service"/>
+
+        <addForeignKeyConstraint baseColumnNames="booking_id"
+                                 baseTableName="bill"
+                                 constraintName="fk_bill_booking_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="booking"/>
 
     </changeSet>
 </databaseChangeLog>

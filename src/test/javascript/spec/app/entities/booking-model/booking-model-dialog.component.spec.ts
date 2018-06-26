@@ -9,6 +9,7 @@ import { GettingstatedTestModule } from '../../../test.module';
 import { BookingModelDialogComponent } from '../../../../../../main/webapp/app/entities/booking-model/booking-model-dialog.component';
 import { BookingModelService } from '../../../../../../main/webapp/app/entities/booking-model/booking-model.service';
 import { BookingModel } from '../../../../../../main/webapp/app/entities/booking-model/booking-model.model';
+import { RoomModelService } from '../../../../../../main/webapp/app/entities/room-model';
 
 describe('Component Tests', () => {
 
@@ -24,6 +25,7 @@ describe('Component Tests', () => {
                 imports: [GettingstatedTestModule],
                 declarations: [BookingModelDialogComponent],
                 providers: [
+                    RoomModelService,
                     BookingModelService
                 ]
             })

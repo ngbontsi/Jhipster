@@ -31,10 +31,10 @@ entity RoomType (roomType) {
     description Integer required
 }
 relationship ManyToOne {
-	Customer{bill} to Bill{customer}
-    RoomService{bill} to Bill{roomService}
-    Booking{bill} to Bill{booking}
-    Room{booking} to Booking{room}
+	Bill{customer} to Customer{bill} 
+    Bill{roomService} to RoomService{bill}
+    Bill{booking} to Booking{bill} 
+    Booking{room} to Room{booking} 
 }
 relationship OneToOne{
 	Customer{customerType} to CustomerType{customer}
@@ -50,4 +50,4 @@ relationship OneToOne{
 // Set service options to all except few
  service all with serviceImpl //except Employee, Job
 // Set an angular suffix
-angularSuffix * with config
+angularSuffix * with Model

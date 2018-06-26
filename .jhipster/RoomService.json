@@ -2,10 +2,10 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "many-to-one",
+            "relationshipType": "one-to-many",
             "relationshipName": "bill",
             "otherEntityName": "bill",
-            "otherEntityField": "id"
+            "otherEntityRelationshipName": "roomService"
         }
     ],
     "fields": [
@@ -23,5 +23,5 @@
     "pagination": "no",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "config"
+    "angularJSSuffix": "Model"
 }

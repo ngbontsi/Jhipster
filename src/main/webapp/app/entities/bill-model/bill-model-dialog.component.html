@@ -13,21 +13,6 @@
                    [(ngModel)]="bill.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" for="field_billid">Billid</label>
-            <input type="number" class="form-control" name="billid" id="field_billid"
-                [(ngModel)]="bill.billid" required/>
-            <div [hidden]="!(editForm.controls.billid?.dirty && editForm.controls.billid?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.billid?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.billid?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="form-control-label" for="field_paytype">Paytype</label>
             <input type="number" class="form-control" name="paytype" id="field_paytype"
                 [(ngModel)]="bill.paytype" required/>
@@ -60,56 +45,40 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="form-control-label" for="field_cost">Cost</label>
-            <input type="number" class="form-control" name="cost" id="field_cost"
-                [(ngModel)]="bill.cost" required/>
-            <div [hidden]="!(editForm.controls.cost?.dirty && editForm.controls.cost?.invalid)">
+            <label class="form-control-label" for="field_billcost">Billcost</label>
+            <input type="number" class="form-control" name="billcost" id="field_billcost"
+                [(ngModel)]="bill.billcost" required/>
+            <div [hidden]="!(editForm.controls.billcost?.dirty && editForm.controls.billcost?.invalid)">
                 <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.cost?.errors?.required">
+                   [hidden]="!editForm.controls.billcost?.errors?.required">
                    This field is required.
                 </small>
                 <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.cost?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_custid">Custid</label>
-            <input type="number" class="form-control" name="custid" id="field_custid"
-                [(ngModel)]="bill.custid" required/>
-            <div [hidden]="!(editForm.controls.custid?.dirty && editForm.controls.custid?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.custid?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.custid?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_serviceid">Serviceid</label>
-            <input type="number" class="form-control" name="serviceid" id="field_serviceid"
-                [(ngModel)]="bill.serviceid" required/>
-            <div [hidden]="!(editForm.controls.serviceid?.dirty && editForm.controls.serviceid?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.serviceid?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.serviceid?.errors?.number">
+                    [hidden]="!editForm.controls.billcost?.errors?.number">
                     This field should be a number.
                 </small>
             </div>
         </div>
 
         <div class="form-group">
+            <label class="form-control-label" for="field_customer">Customer</label>
+            <select class="form-control" id="field_customer" name="customer" [(ngModel)]="bill.customer" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="customerOption.id === bill.customer?.id ? bill.customer : customerOption" *ngFor="let customerOption of customers; trackBy: trackCustomerById">{{customerOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label class="form-control-label" for="field_roomService">Room Service</label>
             <select class="form-control" id="field_roomService" name="roomService" [(ngModel)]="bill.roomService" >
                 <option [ngValue]="null"></option>
-                <option [ngValue]="roomServiceOption.id === bill.roomService?.id ? bill.roomService : roomServiceOption" *ngFor="let roomServiceOption of roomservices; trackBy: trackRoomServiceById">{{roomServiceOption.bill_id}}</option>
+                <option [ngValue]="roomServiceOption.id === bill.roomService?.id ? bill.roomService : roomServiceOption" *ngFor="let roomServiceOption of roomservices; trackBy: trackRoomServiceById">{{roomServiceOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_booking">Booking</label>
+            <select class="form-control" id="field_booking" name="booking" [(ngModel)]="bill.booking" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="bookingOption.id === bill.booking?.id ? bill.booking : bookingOption" *ngFor="let bookingOption of bookings; trackBy: trackBookingById">{{bookingOption.id}}</option>
             </select>
         </div>
     </div>

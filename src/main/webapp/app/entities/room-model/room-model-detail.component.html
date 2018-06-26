@@ -4,28 +4,14 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span>Roomid</span></dt>
+        <dt><span>Isreserved</span></dt>
         <dd>
-            <span>{{room.roomid}}</span>
-        </dd>
-        <dt><span>Roomtype</span></dt>
-        <dd>
-            <span>{{room.roomtype}}</span>
-        </dd>
-        <dt><span>Is Reserved</span></dt>
-        <dd>
-            <span>{{room.isReserved}}</span>
-        </dd>
-        <dt><span>Booking</span></dt>
-        <dd>
-            <div *ngIf="room.booking">
-                <a [routerLink]="['/booking-model', room.booking?.id]">{{room.booking?.book_id}}</a>
-            </div>
+            <span>{{room.isreserved}}</span>
         </dd>
         <dt><span>Room Type</span></dt>
         <dd>
             <div *ngIf="room.roomType">
-                <a [routerLink]="['/room-type-model', room.roomType?.id]">{{room.roomType?.room_type}}</a>
+                <a [routerLink]="['/room-type-config', room.roomType?.id]">{{room.roomType?.id}}</a>
             </div>
         </dd>
     </dl>

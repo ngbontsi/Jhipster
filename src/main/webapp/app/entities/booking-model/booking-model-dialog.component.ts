@@ -4,11 +4,12 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { BookingModel } from './booking-model.model';
 import { BookingModelPopupService } from './booking-model-popup.service';
 import { BookingModelService } from './booking-model.service';
+import { RoomModel, RoomModelService } from '../room-model';
 
 @Component({
     selector: 'jhi-booking-model-dialog',
@@ -19,15 +20,21 @@ export class BookingModelDialogComponent implements OnInit {
     booking: BookingModel;
     isSaving: boolean;
 
+    rooms: RoomModel[];
+
     constructor(
         public activeModal: NgbActiveModal,
+        private jhiAlertService: JhiAlertService,
         private bookingService: BookingModelService,
+        private roomService: RoomModelService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
+        this.roomService.query()
+            .subscribe((res: HttpResponse<RoomModel[]>) => { this.rooms = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -58,6 +65,14 @@ export class BookingModelDialogComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
+    }
+
+    private onError(error: any) {
+        this.jhiAlertService.error(error.message, null, null);
+    }
+
+    trackRoomById(index: number, item: RoomModel) {
+        return item.id;
     }
 }
 

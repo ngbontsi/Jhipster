@@ -1,0 +1,105 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-1">
+        <addColumn tableName="booking">
+            <column name="bill_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-2">
+        <addColumn tableName="room_service">
+            <column name="bill_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-3">
+        <addColumn tableName="bill">
+            <column name="billcost" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-4">
+        <addColumn tableName="room">
+            <column name="isreserved" type="bit"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-5">
+        <addUniqueConstraint columnNames="customer_type_id" constraintName="UC_CUSTOMERCUSTOMER_TYPE_ID_COL" tableName="customer"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-6">
+        <addUniqueConstraint columnNames="room_type_id" constraintName="UC_ROOMROOM_TYPE_ID_COL" tableName="room"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-7">
+        <addForeignKeyConstraint baseColumnNames="bill_id" baseTableName="room_service" constraintName="FKdf494dkxpe6o3ws5bir6xfvgc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="bill"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-8">
+        <addForeignKeyConstraint baseColumnNames="bill_id" baseTableName="booking" constraintName="FKgi35fflyy8jm388q42yn93hu8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="bill"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-9">
+        <dropForeignKeyConstraint baseTableName="bill" constraintName="fk_bill_room_service_id"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-10">
+        <dropForeignKeyConstraint baseTableName="customer" constraintName="fk_customer_booking_id"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-11">
+        <dropColumn columnName="billid" tableName="bill"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-12">
+        <dropColumn columnName="bookid" tableName="booking"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-13">
+        <dropColumn columnName="booking_id" tableName="customer"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-14">
+        <dropColumn columnName="cusid" tableName="customer"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-15">
+        <dropColumn columnName="custid" tableName="bill"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-16">
+        <dropColumn columnName="custid" tableName="booking"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-17">
+        <dropColumn columnName="custtype" tableName="customer"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-18">
+        <dropColumn columnName="custtype" tableName="customer_type"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-19">
+        <dropColumn columnName="is_reserved" tableName="room"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-20">
+        <dropColumn columnName="jhi_cost" tableName="bill"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-21">
+        <dropColumn columnName="rates" tableName="room_type"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-22">
+        <dropColumn columnName="room_service_id" tableName="bill"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-23">
+        <dropColumn columnName="roomid" tableName="booking"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-24">
+        <dropColumn columnName="roomid" tableName="room"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-25">
+        <dropColumn columnName="roomtype" tableName="room"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-26">
+        <dropColumn columnName="roomtype" tableName="room_type"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-27">
+        <dropColumn columnName="serviceid" tableName="bill"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-28">
+        <dropColumn columnName="serviceid" tableName="room_service"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-29">
+        <dropUniqueConstraint constraintName="UC_CUSTOMERCUSTOMER_TYPE_ID_COL" tableName="customer"/>
+        <addUniqueConstraint columnNames="customer_type_id" constraintName="UC_CUSTOMERCUSTOMER_TYPE_ID_COL" tableName="customer"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530012943895-30">
+        <dropUniqueConstraint constraintName="UC_ROOMROOM_TYPE_ID_COL" tableName="room"/>
+        <addUniqueConstraint columnNames="room_type_id" constraintName="UC_ROOMROOM_TYPE_ID_COL" tableName="room"/>
+    </changeSet>
+</databaseChangeLog>

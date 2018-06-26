@@ -1,5 +1,6 @@
 package com.bontsi.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -7,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -27,8 +30,10 @@ public class RoomService implements Serializable {
     @Column(name = "description", nullable = false)
     private Integer description;
 
-    @ManyToOne
-    private Bill bill;
+    @OneToMany(mappedBy = "roomService")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Bill> bills = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -52,17 +57,29 @@ public class RoomService implements Serializable {
         this.description = description;
     }
 
-    public Bill getBill() {
-        return bill;
+    public Set<Bill> getBills() {
+        return bills;
     }
 
-    public RoomService bill(Bill bill) {
-        this.bill = bill;
+    public RoomService bills(Set<Bill> bills) {
+        this.bills = bills;
         return this;
     }
 
-    public void setBill(Bill bill) {
-        this.bill = bill;
+    public RoomService addBill(Bill bill) {
+        this.bills.add(bill);
+        bill.setRoomService(this);
+        return this;
+    }
+
+    public RoomService removeBill(Bill bill) {
+        this.bills.remove(bill);
+        bill.setRoomService(null);
+        return this;
+    }
+
+    public void setBills(Set<Bill> bills) {
+        this.bills = bills;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

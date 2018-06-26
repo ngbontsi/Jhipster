@@ -4,10 +4,6 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span>Billid</span></dt>
-        <dd>
-            <span>{{bill.billid}}</span>
-        </dd>
         <dt><span>Paytype</span></dt>
         <dd>
             <span>{{bill.paytype}}</span>
@@ -16,22 +12,26 @@
         <dd>
             <span>{{bill.paydate | date:'medium'}}</span>
         </dd>
-        <dt><span>Cost</span></dt>
+        <dt><span>Billcost</span></dt>
         <dd>
-            <span>{{bill.cost}}</span>
+            <span>{{bill.billcost}}</span>
         </dd>
-        <dt><span>Custid</span></dt>
+        <dt><span>Customer</span></dt>
         <dd>
-            <span>{{bill.custid}}</span>
-        </dd>
-        <dt><span>Serviceid</span></dt>
-        <dd>
-            <span>{{bill.serviceid}}</span>
+            <div *ngIf="bill.customer">
+                <a [routerLink]="['/customer-model', bill.customer?.id]">{{bill.customer?.id}}</a>
+            </div>
         </dd>
         <dt><span>Room Service</span></dt>
         <dd>
             <div *ngIf="bill.roomService">
-                <a [routerLink]="['/room-service-model', bill.roomService?.id]">{{bill.roomService?.bill_id}}</a>
+                <a [routerLink]="['/room-service-model', bill.roomService?.id]">{{bill.roomService?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Booking</span></dt>
+        <dd>
+            <div *ngIf="bill.booking">
+                <a [routerLink]="['/booking-model', bill.booking?.id]">{{bill.booking?.id}}</a>
             </div>
         </dd>
     </dl>

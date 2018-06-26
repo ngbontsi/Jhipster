@@ -30,7 +30,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="bill_id" type="bigint">
+            <column name="room_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 

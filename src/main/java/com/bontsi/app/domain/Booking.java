@@ -36,12 +36,12 @@ public class Booking implements Serializable {
     private Instant dateout;
 
     @ManyToOne
-    private Bill bill;
+    private Room room;
 
     @OneToMany(mappedBy = "booking")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Room> rooms = new HashSet<>();
+    private Set<Bill> bills = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -78,42 +78,42 @@ public class Booking implements Serializable {
         this.dateout = dateout;
     }
 
-    public Bill getBill() {
-        return bill;
+    public Room getRoom() {
+        return room;
     }
 
-    public Booking bill(Bill bill) {
-        this.bill = bill;
+    public Booking room(Room room) {
+        this.room = room;
         return this;
     }
 
-    public void setBill(Bill bill) {
-        this.bill = bill;
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
-    public Set<Room> getRooms() {
-        return rooms;
+    public Set<Bill> getBills() {
+        return bills;
     }
 
-    public Booking rooms(Set<Room> rooms) {
-        this.rooms = rooms;
+    public Booking bills(Set<Bill> bills) {
+        this.bills = bills;
         return this;
     }
 
-    public Booking addRoom(Room room) {
-        this.rooms.add(room);
-        room.setBooking(this);
+    public Booking addBill(Bill bill) {
+        this.bills.add(bill);
+        bill.setBooking(this);
         return this;
     }
 
-    public Booking removeRoom(Room room) {
-        this.rooms.remove(room);
-        room.setBooking(null);
+    public Booking removeBill(Bill bill) {
+        this.bills.remove(bill);
+        bill.setBooking(null);
         return this;
     }
 
-    public void setRooms(Set<Room> rooms) {
-        this.rooms = rooms;
+    public void setBills(Set<Bill> bills) {
+        this.bills = bills;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

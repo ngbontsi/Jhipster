@@ -2,22 +2,22 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "one-to-many",
+            "relationshipType": "many-to-one",
             "relationshipName": "customer",
             "otherEntityName": "customer",
-            "otherEntityRelationshipName": "bill"
+            "otherEntityField": "id"
         },
         {
-            "relationshipType": "one-to-many",
+            "relationshipType": "many-to-one",
             "relationshipName": "roomService",
             "otherEntityName": "roomService",
-            "otherEntityRelationshipName": "bill"
+            "otherEntityField": "id"
         },
         {
-            "relationshipType": "one-to-many",
+            "relationshipType": "many-to-one",
             "relationshipName": "booking",
             "otherEntityName": "booking",
-            "otherEntityRelationshipName": "bill"
+            "otherEntityField": "id"
         }
     ],
     "fields": [
@@ -49,5 +49,5 @@
     "pagination": "no",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "config"
+    "angularJSSuffix": "Model"
 }

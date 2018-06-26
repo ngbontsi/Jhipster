@@ -9,8 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { RoomModel } from './room-model.model';
 import { RoomModelPopupService } from './room-model-popup.service';
 import { RoomModelService } from './room-model.service';
-import { BookingModel, BookingModelService } from '../booking-model';
-import { RoomTypeModel, RoomTypeModelService } from '../room-type-model';
+import { RoomTypeConfig, RoomTypeConfigService } from '../room-type-config';
 
 @Component({
     selector: 'jhi-room-model-dialog',
@@ -21,26 +20,32 @@ export class RoomModelDialogComponent implements OnInit {
     room: RoomModel;
     isSaving: boolean;
 
-    bookings: BookingModel[];
-
-    roomtypes: RoomTypeModel[];
+    roomtypes: RoomTypeConfig[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private roomService: RoomModelService,
-        private bookingService: BookingModelService,
-        private roomTypeService: RoomTypeModelService,
+        private roomTypeService: RoomTypeConfigService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        this.bookingService.query()
-            .subscribe((res: HttpResponse<BookingModel[]>) => { this.bookings = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
-        this.roomTypeService.query()
-            .subscribe((res: HttpResponse<RoomTypeModel[]>) => { this.roomtypes = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+        this.roomTypeService
+            .query({filter: 'room-is-null'})
+            .subscribe((res: HttpResponse<RoomTypeConfig[]>) => {
+                if (!this.room.roomType || !this.room.roomType.id) {
+                    this.roomtypes = res.body;
+                } else {
+                    this.roomTypeService
+                        .find(this.room.roomType.id)
+                        .subscribe((subRes: HttpResponse<RoomTypeConfig>) => {
+                            this.roomtypes = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
+                }
+            }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -77,11 +82,7 @@ export class RoomModelDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackBookingById(index: number, item: BookingModel) {
-        return item.id;
-    }
-
-    trackRoomTypeById(index: number, item: RoomTypeModel) {
+    trackRoomTypeById(index: number, item: RoomTypeConfig) {
         return item.id;
     }
 }

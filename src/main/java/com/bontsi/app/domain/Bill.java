@@ -1,6 +1,5 @@
 package com.bontsi.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -9,8 +8,6 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -39,20 +36,14 @@ public class Bill implements Serializable {
     @Column(name = "billcost", nullable = false)
     private Integer billcost;
 
-    @OneToMany(mappedBy = "bill")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Customer> customers = new HashSet<>();
+    @ManyToOne
+    private Customer customer;
 
-    @OneToMany(mappedBy = "bill")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<RoomService> roomServices = new HashSet<>();
+    @ManyToOne
+    private RoomService roomService;
 
-    @OneToMany(mappedBy = "bill")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Booking> bookings = new HashSet<>();
+    @ManyToOne
+    private Booking booking;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -102,79 +93,43 @@ public class Bill implements Serializable {
         this.billcost = billcost;
     }
 
-    public Set<Customer> getCustomers() {
-        return customers;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public Bill customers(Set<Customer> customers) {
-        this.customers = customers;
+    public Bill customer(Customer customer) {
+        this.customer = customer;
         return this;
     }
 
-    public Bill addCustomer(Customer customer) {
-        this.customers.add(customer);
-        customer.setBill(this);
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public RoomService getRoomService() {
+        return roomService;
+    }
+
+    public Bill roomService(RoomService roomService) {
+        this.roomService = roomService;
         return this;
     }
 
-    public Bill removeCustomer(Customer customer) {
-        this.customers.remove(customer);
-        customer.setBill(null);
+    public void setRoomService(RoomService roomService) {
+        this.roomService = roomService;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public Bill booking(Booking booking) {
+        this.booking = booking;
         return this;
     }
 
-    public void setCustomers(Set<Customer> customers) {
-        this.customers = customers;
-    }
-
-    public Set<RoomService> getRoomServices() {
-        return roomServices;
-    }
-
-    public Bill roomServices(Set<RoomService> roomServices) {
-        this.roomServices = roomServices;
-        return this;
-    }
-
-    public Bill addRoomService(RoomService roomService) {
-        this.roomServices.add(roomService);
-        roomService.setBill(this);
-        return this;
-    }
-
-    public Bill removeRoomService(RoomService roomService) {
-        this.roomServices.remove(roomService);
-        roomService.setBill(null);
-        return this;
-    }
-
-    public void setRoomServices(Set<RoomService> roomServices) {
-        this.roomServices = roomServices;
-    }
-
-    public Set<Booking> getBookings() {
-        return bookings;
-    }
-
-    public Bill bookings(Set<Booking> bookings) {
-        this.bookings = bookings;
-        return this;
-    }
-
-    public Bill addBooking(Booking booking) {
-        this.bookings.add(booking);
-        booking.setBill(this);
-        return this;
-    }
-
-    public Bill removeBooking(Booking booking) {
-        this.bookings.remove(booking);
-        booking.setBill(null);
-        return this;
-    }
-
-    public void setBookings(Set<Booking> bookings) {
-        this.bookings = bookings;
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

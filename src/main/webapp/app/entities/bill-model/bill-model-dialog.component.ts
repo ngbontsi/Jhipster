@@ -9,7 +9,9 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { BillModel } from './bill-model.model';
 import { BillModelPopupService } from './bill-model-popup.service';
 import { BillModelService } from './bill-model.service';
+import { CustomerModel, CustomerModelService } from '../customer-model';
 import { RoomServiceModel, RoomServiceModelService } from '../room-service-model';
+import { BookingModel, BookingModelService } from '../booking-model';
 
 @Component({
     selector: 'jhi-bill-model-dialog',
@@ -20,21 +22,31 @@ export class BillModelDialogComponent implements OnInit {
     bill: BillModel;
     isSaving: boolean;
 
+    customers: CustomerModel[];
+
     roomservices: RoomServiceModel[];
+
+    bookings: BookingModel[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private billService: BillModelService,
+        private customerService: CustomerModelService,
         private roomServiceService: RoomServiceModelService,
+        private bookingService: BookingModelService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
+        this.customerService.query()
+            .subscribe((res: HttpResponse<CustomerModel[]>) => { this.customers = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.roomServiceService.query()
             .subscribe((res: HttpResponse<RoomServiceModel[]>) => { this.roomservices = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+        this.bookingService.query()
+            .subscribe((res: HttpResponse<BookingModel[]>) => { this.bookings = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -71,7 +83,15 @@ export class BillModelDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
+    trackCustomerById(index: number, item: CustomerModel) {
+        return item.id;
+    }
+
     trackRoomServiceById(index: number, item: RoomServiceModel) {
+        return item.id;
+    }
+
+    trackBookingById(index: number, item: BookingModel) {
         return item.id;
     }
 }

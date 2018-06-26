@@ -17,10 +17,7 @@
             <thead>
             <tr>
             <th><span>ID</span></th>
-            <th><span>Roomid</span></th>
-            <th><span>Roomtype</span></th>
-            <th><span>Is Reserved</span></th>
-            <th><span>Booking</span></th>
+            <th><span>Isreserved</span></th>
             <th><span>Room Type</span></th>
             <th></th>
             </tr>
@@ -28,17 +25,10 @@
             <tbody>
             <tr *ngFor="let room of rooms ;trackBy: trackId">
                 <td><a [routerLink]="['../room-model', room.id ]">{{room.id}}</a></td>
-                <td>{{room.roomid}}</td>
-                <td>{{room.roomtype}}</td>
-                <td>{{room.isReserved}}</td>
-                <td>
-                    <div *ngIf="room.booking">
-                        <a [routerLink]="['../booking-model', room.booking?.id ]" >{{room.booking?.book_id}}</a>
-                    </div>
-                </td>
+                <td>{{room.isreserved}}</td>
                 <td>
                     <div *ngIf="room.roomType">
-                        <a [routerLink]="['../room-type-model', room.roomType?.id ]" >{{room.roomType?.room_type}}</a>
+                        <a [routerLink]="['../room-type-config', room.roomType?.id ]" >{{room.roomType?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

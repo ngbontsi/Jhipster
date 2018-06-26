@@ -13,21 +13,6 @@
                    [(ngModel)]="customer.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" for="field_cusid">Cusid</label>
-            <input type="number" class="form-control" name="cusid" id="field_cusid"
-                [(ngModel)]="customer.cusid" required/>
-            <div [hidden]="!(editForm.controls.cusid?.dirty && editForm.controls.cusid?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.cusid?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.cusid?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="form-control-label" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
                 [(ngModel)]="customer.name" required maxlength="45"/>
@@ -68,41 +53,12 @@
                 </small>
             </div>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_custtype">Custtype</label>
-            <input type="number" class="form-control" name="custtype" id="field_custtype"
-                [(ngModel)]="customer.custtype" required/>
-            <div [hidden]="!(editForm.controls.custtype?.dirty && editForm.controls.custtype?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.custtype?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.custtype?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
 
         <div class="form-group">
-            <label class="form-control-label" for="field_booking">Booking</label>
-            <select class="form-control" id="field_booking" name="booking" [(ngModel)]="customer.booking" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="bookingOption.id === customer.booking?.id ? customer.booking : bookingOption" *ngFor="let bookingOption of bookings; trackBy: trackBookingById">{{bookingOption.book_id}}</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_bill">Bill</label>
-            <select class="form-control" id="field_bill" name="bill" [(ngModel)]="customer.bill" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="billOption.id === customer.bill?.id ? customer.bill : billOption" *ngFor="let billOption of bills; trackBy: trackBillById">{{billOption.bill_id}}</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label class="form-control-label" for="field_customerType">Customer Type</label>
-            <select class="form-control" id="field_customerType" name="customerType" [(ngModel)]="customer.customerType" >
+            <select class="form-control" id="field_customerType" name="customerType" [(ngModel)]="customer.customerType">
                 <option [ngValue]="null"></option>
-                <option [ngValue]="customerTypeOption.id === customer.customerType?.id ? customer.customerType : customerTypeOption" *ngFor="let customerTypeOption of customertypes; trackBy: trackCustomerTypeById">{{customerTypeOption.cust_type}}</option>
+                <option [ngValue]="customerTypeOption.id === customer.customerType?.id ? customer.customerType : customerTypeOption" *ngFor="let customerTypeOption of customertypes; trackBy: trackCustomerTypeById">{{customerTypeOption.id}}</option>
             </select>
         </div>
     </div>

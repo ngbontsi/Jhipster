@@ -1,5 +1,6 @@
 package com.bontsi.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -7,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -41,8 +44,10 @@ public class Customer implements Serializable {
     @JoinColumn(unique = true)
     private CustomerType customerType;
 
-    @ManyToOne
-    private Bill bill;
+    @OneToMany(mappedBy = "customer")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Bill> bills = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -105,17 +110,29 @@ public class Customer implements Serializable {
         this.customerType = customerType;
     }
 
-    public Bill getBill() {
-        return bill;
+    public Set<Bill> getBills() {
+        return bills;
     }
 
-    public Customer bill(Bill bill) {
-        this.bill = bill;
+    public Customer bills(Set<Bill> bills) {
+        this.bills = bills;
         return this;
     }
 
-    public void setBill(Bill bill) {
-        this.bill = bill;
+    public Customer addBill(Bill bill) {
+        this.bills.add(bill);
+        bill.setCustomer(this);
+        return this;
+    }
+
+    public Customer removeBill(Bill bill) {
+        this.bills.remove(bill);
+        bill.setCustomer(null);
+        return this;
+    }
+
+    public void setBills(Set<Bill> bills) {
+        this.bills = bills;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

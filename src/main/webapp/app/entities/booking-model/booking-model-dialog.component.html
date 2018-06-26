@@ -13,21 +13,6 @@
                    [(ngModel)]="booking.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" for="field_bookid">Bookid</label>
-            <input type="number" class="form-control" name="bookid" id="field_bookid"
-                [(ngModel)]="booking.bookid" required/>
-            <div [hidden]="!(editForm.controls.bookid?.dirty && editForm.controls.bookid?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.bookid?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.bookid?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="form-control-label" for="field_datein">Datein</label>
             <div class="d-flex">
                 <input id="field_datein" type="datetime-local" class="form-control" name="datein" [(ngModel)]="booking.datein"
@@ -61,37 +46,14 @@
                 </small>
             </div>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_roomid">Roomid</label>
-            <input type="number" class="form-control" name="roomid" id="field_roomid"
-                [(ngModel)]="booking.roomid" required/>
-            <div [hidden]="!(editForm.controls.roomid?.dirty && editForm.controls.roomid?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.roomid?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.roomid?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_custid">Custid</label>
-            <input type="number" class="form-control" name="custid" id="field_custid"
-                [(ngModel)]="booking.custid" required/>
-            <div [hidden]="!(editForm.controls.custid?.dirty && editForm.controls.custid?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.custid?.errors?.required">
-                   This field is required.
-                </small>
-                <small class="form-text text-danger"
-                    [hidden]="!editForm.controls.custid?.errors?.number">
-                    This field should be a number.
-                </small>
-            </div>
-        </div>
 
+        <div class="form-group">
+            <label class="form-control-label" for="field_room">Room</label>
+            <select class="form-control" id="field_room" name="room" [(ngModel)]="booking.room" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="roomOption.id === booking.room?.id ? booking.room : roomOption" *ngFor="let roomOption of rooms; trackBy: trackRoomById">{{roomOption.id}}</option>
+            </select>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">

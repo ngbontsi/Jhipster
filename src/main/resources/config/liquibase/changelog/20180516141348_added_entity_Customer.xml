@@ -36,10 +36,6 @@
             <column name="customer_type_id" type="bigint">
                 <constraints unique="true" nullable="true" />
             </column>
-            <column name="bill_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         

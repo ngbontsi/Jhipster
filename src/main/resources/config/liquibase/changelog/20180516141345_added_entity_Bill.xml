@@ -34,6 +34,18 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="customer_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="room_service_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="booking_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="bill" columnName="paydate" columnDataType="datetime"/>

@@ -9,9 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { CustomerModel } from './customer-model.model';
 import { CustomerModelPopupService } from './customer-model-popup.service';
 import { CustomerModelService } from './customer-model.service';
-import { BookingModel, BookingModelService } from '../booking-model';
-import { BillModel, BillModelService } from '../bill-model';
-import { CustomerTypeModel, CustomerTypeModelService } from '../customer-type-model';
+import { CustomerTypeConfig, CustomerTypeConfigService } from '../customer-type-config';
 
 @Component({
     selector: 'jhi-customer-model-dialog',
@@ -22,31 +20,32 @@ export class CustomerModelDialogComponent implements OnInit {
     customer: CustomerModel;
     isSaving: boolean;
 
-    bookings: BookingModel[];
-
-    bills: BillModel[];
-
-    customertypes: CustomerTypeModel[];
+    customertypes: CustomerTypeConfig[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private customerService: CustomerModelService,
-        private bookingService: BookingModelService,
-        private billService: BillModelService,
-        private customerTypeService: CustomerTypeModelService,
+        private customerTypeService: CustomerTypeConfigService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        this.bookingService.query()
-            .subscribe((res: HttpResponse<BookingModel[]>) => { this.bookings = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
-        this.billService.query()
-            .subscribe((res: HttpResponse<BillModel[]>) => { this.bills = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
-        this.customerTypeService.query()
-            .subscribe((res: HttpResponse<CustomerTypeModel[]>) => { this.customertypes = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+        this.customerTypeService
+            .query({filter: 'customer-is-null'})
+            .subscribe((res: HttpResponse<CustomerTypeConfig[]>) => {
+                if (!this.customer.customerType || !this.customer.customerType.id) {
+                    this.customertypes = res.body;
+                } else {
+                    this.customerTypeService
+                        .find(this.customer.customerType.id)
+                        .subscribe((subRes: HttpResponse<CustomerTypeConfig>) => {
+                            this.customertypes = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
+                }
+            }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -83,15 +82,7 @@ export class CustomerModelDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackBookingById(index: number, item: BookingModel) {
-        return item.id;
-    }
-
-    trackBillById(index: number, item: BillModel) {
-        return item.id;
-    }
-
-    trackCustomerTypeById(index: number, item: CustomerTypeModel) {
+    trackCustomerTypeById(index: number, item: CustomerTypeConfig) {
         return item.id;
     }
 }

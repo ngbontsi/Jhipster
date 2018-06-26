@@ -17,22 +17,22 @@
             <thead>
             <tr>
             <th><span>ID</span></th>
-            <th><span>Bookid</span></th>
             <th><span>Datein</span></th>
             <th><span>Dateout</span></th>
-            <th><span>Roomid</span></th>
-            <th><span>Custid</span></th>
+            <th><span>Room</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let booking of bookings ;trackBy: trackId">
                 <td><a [routerLink]="['../booking-model', booking.id ]">{{booking.id}}</a></td>
-                <td>{{booking.bookid}}</td>
                 <td>{{booking.datein | date:'medium'}}</td>
                 <td>{{booking.dateout | date:'medium'}}</td>
-                <td>{{booking.roomid}}</td>
-                <td>{{booking.custid}}</td>
+                <td>
+                    <div *ngIf="booking.room">
+                        <a [routerLink]="['../room-model', booking.room?.id ]" >{{booking.room?.id}}</a>
+                    </div>
+                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

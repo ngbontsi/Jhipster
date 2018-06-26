@@ -9,8 +9,7 @@ import { GettingstatedTestModule } from '../../../test.module';
 import { RoomModelDialogComponent } from '../../../../../../main/webapp/app/entities/room-model/room-model-dialog.component';
 import { RoomModelService } from '../../../../../../main/webapp/app/entities/room-model/room-model.service';
 import { RoomModel } from '../../../../../../main/webapp/app/entities/room-model/room-model.model';
-import { BookingModelService } from '../../../../../../main/webapp/app/entities/booking-model';
-import { RoomTypeModelService } from '../../../../../../main/webapp/app/entities/room-type-model';
+import { RoomTypeConfigService } from '../../../../../../main/webapp/app/entities/room-type-config';
 
 describe('Component Tests', () => {
 
@@ -26,8 +25,7 @@ describe('Component Tests', () => {
                 imports: [GettingstatedTestModule],
                 declarations: [RoomModelDialogComponent],
                 providers: [
-                    BookingModelService,
-                    RoomTypeModelService,
+                    RoomTypeConfigService,
                     RoomModelService
                 ]
             })

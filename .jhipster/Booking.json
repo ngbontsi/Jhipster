@@ -3,14 +3,14 @@
     "relationships": [
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "bill",
-            "otherEntityName": "bill",
+            "relationshipName": "room",
+            "otherEntityName": "room",
             "otherEntityField": "id"
         },
         {
             "relationshipType": "one-to-many",
-            "relationshipName": "room",
-            "otherEntityName": "room",
+            "relationshipName": "bill",
+            "otherEntityName": "bill",
             "otherEntityRelationshipName": "booking"
         }
     ],
@@ -36,5 +36,5 @@
     "pagination": "no",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "config"
+    "angularJSSuffix": "Model"
 }

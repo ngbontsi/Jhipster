@@ -14,11 +14,5 @@
                                  referencedColumnNames="id"
                                  referencedTableName="room_type"/>
 
-        <addForeignKeyConstraint baseColumnNames="booking_id"
-                                 baseTableName="room"
-                                 constraintName="fk_room_booking_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="booking"/>
-
     </changeSet>
 </databaseChangeLog>

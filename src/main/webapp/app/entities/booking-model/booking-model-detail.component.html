@@ -4,10 +4,6 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span>Bookid</span></dt>
-        <dd>
-            <span>{{booking.bookid}}</span>
-        </dd>
         <dt><span>Datein</span></dt>
         <dd>
             <span>{{booking.datein | date:'medium'}}</span>
@@ -16,13 +12,11 @@
         <dd>
             <span>{{booking.dateout | date:'medium'}}</span>
         </dd>
-        <dt><span>Roomid</span></dt>
+        <dt><span>Room</span></dt>
         <dd>
-            <span>{{booking.roomid}}</span>
-        </dd>
-        <dt><span>Custid</span></dt>
-        <dd>
-            <span>{{booking.custid}}</span>
+            <div *ngIf="booking.room">
+                <a [routerLink]="['/room-model', booking.room?.id]">{{booking.room?.id}}</a>
+            </div>
         </dd>
     </dl>
 

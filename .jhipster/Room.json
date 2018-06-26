@@ -10,10 +10,10 @@
             "otherEntityRelationshipName": "room"
         },
         {
-            "relationshipType": "many-to-one",
+            "relationshipType": "one-to-many",
             "relationshipName": "booking",
             "otherEntityName": "booking",
-            "otherEntityField": "id"
+            "otherEntityRelationshipName": "room"
         }
     ],
     "fields": [
@@ -28,5 +28,5 @@
     "pagination": "no",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "config"
+    "angularJSSuffix": "Model"
 }

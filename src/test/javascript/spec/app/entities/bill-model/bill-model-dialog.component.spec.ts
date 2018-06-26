@@ -9,7 +9,9 @@ import { GettingstatedTestModule } from '../../../test.module';
 import { BillModelDialogComponent } from '../../../../../../main/webapp/app/entities/bill-model/bill-model-dialog.component';
 import { BillModelService } from '../../../../../../main/webapp/app/entities/bill-model/bill-model.service';
 import { BillModel } from '../../../../../../main/webapp/app/entities/bill-model/bill-model.model';
+import { CustomerModelService } from '../../../../../../main/webapp/app/entities/customer-model';
 import { RoomServiceModelService } from '../../../../../../main/webapp/app/entities/room-service-model';
+import { BookingModelService } from '../../../../../../main/webapp/app/entities/booking-model';
 
 describe('Component Tests', () => {
 
@@ -25,7 +27,9 @@ describe('Component Tests', () => {
                 imports: [GettingstatedTestModule],
                 declarations: [BillModelDialogComponent],
                 providers: [
+                    CustomerModelService,
                     RoomServiceModelService,
+                    BookingModelService,
                     BillModelService
                 ]
             })

@@ -17,7 +17,6 @@
             <thead>
             <tr>
             <th><span>ID</span></th>
-            <th><span>Serviceid</span></th>
             <th><span>Description</span></th>
             <th></th>
             </tr>
@@ -25,7 +24,6 @@
             <tbody>
             <tr *ngFor="let roomService of roomServices ;trackBy: trackId">
                 <td><a [routerLink]="['../room-service-model', roomService.id ]">{{roomService.id}}</a></td>
-                <td>{{roomService.serviceid}}</td>
                 <td>{{roomService.description}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

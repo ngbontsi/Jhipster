@@ -3,12 +3,10 @@ import { BaseEntity } from './../../shared';
 export class RoomModel implements BaseEntity {
     constructor(
         public id?: number,
-        public roomid?: number,
-        public roomtype?: number,
-        public isReserved?: boolean,
-        public booking?: BaseEntity,
+        public isreserved?: boolean,
         public roomType?: BaseEntity,
+        public bookings?: BaseEntity[],
     ) {
-        this.isReserved = false;
+        this.isreserved = false;
     }
 }

@@ -49,6 +49,10 @@ public class CacheConfiguration {
             cm.createCache(com.bontsi.app.domain.Bill.class.getName() + ".customers", jcacheConfiguration);
             cm.createCache(com.bontsi.app.domain.Bill.class.getName() + ".roomServices", jcacheConfiguration);
             cm.createCache(com.bontsi.app.domain.Bill.class.getName() + ".bookings", jcacheConfiguration);
+            cm.createCache(com.bontsi.app.domain.Booking.class.getName() + ".bills", jcacheConfiguration);
+            cm.createCache(com.bontsi.app.domain.Room.class.getName() + ".bookings", jcacheConfiguration);
+            cm.createCache(com.bontsi.app.domain.RoomService.class.getName() + ".bills", jcacheConfiguration);
+            cm.createCache(com.bontsi.app.domain.Customer.class.getName() + ".bills", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

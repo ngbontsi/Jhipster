@@ -1,0 +1,53 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-1">
+        <addColumn tableName="bill">
+            <column name="booking_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-2">
+        <addColumn tableName="bill">
+            <column name="customer_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-3">
+        <addColumn tableName="booking">
+            <column name="room_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-4">
+        <addColumn tableName="bill">
+            <column name="room_service_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-5">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="bill" constraintName="FKcdveik90g4pvk7m249scu73pg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="customer"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-6">
+        <addForeignKeyConstraint baseColumnNames="booking_id" baseTableName="bill" constraintName="FKhn2nihthxqqhxw3we3clpfhxp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="booking"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-7">
+        <addForeignKeyConstraint baseColumnNames="customer_type_id" baseTableName="customer" constraintName="FKn8vf9jf3m29plqn6rx45p2pl7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="customer_type"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-8">
+        <addForeignKeyConstraint baseColumnNames="room_id" baseTableName="booking" constraintName="FKq83pan5xy2a6rn0qsl9bckqai" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="room"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-9">
+        <addForeignKeyConstraint baseColumnNames="room_service_id" baseTableName="bill" constraintName="FKqq16mtm97fo8kuq4qm12x1xmu" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="room_service"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-10">
+        <dropForeignKeyConstraint baseTableName="room" constraintName="fk_room_booking_id"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-11">
+        <dropColumn columnName="bill_id" tableName="booking"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-12">
+        <dropColumn columnName="bill_id" tableName="customer"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-13">
+        <dropColumn columnName="bill_id" tableName="room_service"/>
+    </changeSet>
+    <changeSet author="ndimphiwe.bontsi (generated)" id="1530014556695-14">
+        <dropColumn columnName="booking_id" tableName="room"/>
+    </changeSet>
+</databaseChangeLog>

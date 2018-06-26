@@ -14,11 +14,5 @@
                                  referencedColumnNames="id"
                                  referencedTableName="customer_type"/>
 
-        <addForeignKeyConstraint baseColumnNames="bill_id"
-                                 baseTableName="customer"
-                                 constraintName="fk_customer_bill_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="bill"/>
-
     </changeSet>
 </databaseChangeLog>
