@@ -17,18 +17,14 @@
             <thead>
             <tr>
             <th><span>ID</span></th>
-            <th><span>Roomtype</span></th>
             <th><span>Description</span></th>
-            <th><span>Rates</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let roomType of roomTypes ;trackBy: trackId">
                 <td><a [routerLink]="['../room-type-model', roomType.id ]">{{roomType.id}}</a></td>
-                <td>{{roomType.roomtype}}</td>
                 <td>{{roomType.description}}</td>
-                <td>{{roomType.rates}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
