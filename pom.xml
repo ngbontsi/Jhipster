@@ -198,6 +198,15 @@
             <artifactId>cache-api</artifactId>
         </dependency>
         <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>io.undertow</groupId>
+		    <artifactId>undertow-servlet</artifactId>
+		 </dependency> 
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
@@ -637,6 +646,11 @@
         </profile>
         <profile>
             <id>webpack</id>
+            <activation>
+                <file>
+                    <missing>${basedir}/target/www/app/main.bundle.js</missing>
+                </file>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -654,6 +668,7 @@
                                     <yarnVersion>${yarn.version}</yarnVersion>
                                 </configuration>
                             </execution>
+                                                      
                             <execution>
                                 <id>webpack build dev</id>
                                 <goals>
@@ -667,6 +682,25 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- below is the missing plugin from the default generator -->
+                    
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <warSourceDirectory>target/www/</warSourceDirectory>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp</directory>
+                                    <includes>
+                                        <include>WEB-INF/**</include>
+                                    </includes>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    
                 </plugins>
             </build>
         </profile>
