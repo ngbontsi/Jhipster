@@ -1,5 +1,7 @@
 package com.bontsi.app.web.rest;
 
+import java.util.List;
+
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,14 +35,14 @@ public class EventResource {
 	}
 
 	@RequestMapping("/api/resources")
-	Iterable<Resource> resources() {
+	List<Resource> resources() {
 		return resourceRepository.findAll();
 	}
 
 	@GetMapping("/api/events")
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	Iterable<Event> events(@RequestParam("from") @DateTimeFormat(iso=ISO.DATE_TIME) LocalDateTime from, @RequestParam("to") @DateTimeFormat(iso=ISO.DATE_TIME) LocalDateTime to) {
-		return eventRepository.findBetween(from, to);
+	List<Event> events(@RequestParam("from") @DateTimeFormat(iso=ISO.DATE_TIME) LocalDateTime from, @RequestParam("to") @DateTimeFormat(iso=ISO.DATE_TIME) LocalDateTime to) {
+		return eventRepository.findByEndBetween(from, to);
 	}
 
 }

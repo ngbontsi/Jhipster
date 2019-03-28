@@ -1,6 +1,6 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, AfterViewInit} from '@angular/core';
 import {DayPilotSchedulerComponent} from "daypilot-pro-angular";
-import {DataService} from "./data.service";
+import {DataService} from "./data.service";{}
 
 @Component({
   selector: 'scheduler-component',
@@ -20,6 +20,23 @@ export class SchedulerComponent implements AfterViewInit{
   
   @ViewChild("scheduler1")
   scheduler: DayPilotSchedulerComponent;
+  events: any;
+
+  config: any = {
+    timeHeaders : [
+      {groupBy: "Month", format: "MMMM yyyy"},
+      {groupBy: "Day", format: "d"}
+    ],
+     eventHeight: 40,
+    scale: "Day",
+    days: 31,
+    startDate: "2017-11-01",
+    treeEnabled: true,
+    onBeforeEventRender : (args) => {
+      args.data.barColor = args.data.color;
+    }
+  };
+
   constructor(private ds: DataService) {}
   
   ngAfterViewInit(): void {
@@ -30,16 +47,6 @@ export class SchedulerComponent implements AfterViewInit{
     this.ds.getEvents(from, to).subscribe(result => this.events = result);
   }
 
-  events: any;
 
-  config: any = {
-    timeHeaders : [
-      {groupBy: "Month", format: "MMMM yyyy"},
-      {groupBy: "Day", format: "d"}
-    ],
-    days: 31,
-    startDate: "2018-12-01",
-    scale: "Day"
-  };
 
 }
