@@ -13,7 +13,7 @@ import {
 } from 'date-fns';
 
 @Injectable()
-export class SchedularCalendarService {
+export class AppService {
     getEvents(actions: CalendarSchedulerEventAction[]): Promise<CalendarSchedulerEvent[]> {
         const events = [
             <CalendarSchedulerEvent>{

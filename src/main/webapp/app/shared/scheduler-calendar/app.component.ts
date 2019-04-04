@@ -24,18 +24,18 @@ import {
     DateAdapter
 } from 'angular-calendar';
 
-import { SchedularCalendarService } from './scheduler-calendar.service';
+import { AppService } from './services/app.service';
 
 @Component({
-    selector: 'scheduler-calendar',
-    templateUrl: './scheduler-calendar.component.html',
-    styleUrls: ['./scheduler-calendar.style.scss'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
     providers: [{
         provide: CalendarDateFormatter,
         useClass: SchedulerDateFormatter
     }]
 })
-export class SchedulerCalendarComponent implements OnInit {
+export class AppComponent implements OnInit {
     title = 'Angular Calendar Scheduler Demo';
 
     CalendarView = CalendarView;
@@ -81,7 +81,7 @@ export class SchedulerCalendarComponent implements OnInit {
 
     events: CalendarSchedulerEvent[];
 
-    constructor(@Inject(LOCALE_ID) locale: string, private appService: SchedularCalendarService, private dateAdapter: DateAdapter) {
+    constructor(@Inject(LOCALE_ID) locale: string, private appService: AppService, private dateAdapter: DateAdapter) {
         this.locale = locale;
 
         // this.dayModifier = ((day: SchedulerViewDay): void => {
@@ -119,13 +119,13 @@ export class SchedulerCalendarComponent implements OnInit {
     }
 
     dateOrViewChanged(): void {
-        if (this.startsWithToday) {
+      /*  if (this.startsWithToday) {
             this.prevBtnDisabled = !this.isDateValid(subPeriod(this.dateAdapter, this.view, this.viewDate, 1));
             this.nextBtnDisabled = !this.isDateValid(addPeriod(this.dateAdapter, this.view, this.viewDate, 1));
         } else {
             this.prevBtnDisabled = !this.isDateValid(endOfPeriod(this.dateAdapter, this.view, subPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
             this.nextBtnDisabled = !this.isDateValid(startOfPeriod(this.dateAdapter, this.view, addPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
-        }
+        }*/
 
         if (this.viewDate < this.minDate) {
             this.changeDate(this.minDate);
